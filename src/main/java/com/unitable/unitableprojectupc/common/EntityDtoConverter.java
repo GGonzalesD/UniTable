@@ -1,6 +1,8 @@
 package com.unitable.unitableprojectupc.common;
 
+import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
+import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +17,23 @@ public class EntityDtoConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    public UsuarioResponse convertEntityToDto(Usuario usuario) {
+    public UsuarioResponse convertEntityToDtoUser(Usuario usuario) {
         return modelMapper.map(usuario, UsuarioResponse.class);
     }
 
-    public List<UsuarioResponse> convertEntityToDto(List<Usuario> usuarios) {
+    public RecompensaResponse convertEntityToDtoRecompensa(Recompensa recompensa) {
+        return modelMapper.map(recompensa, RecompensaResponse.class);
+    }
+
+    public List<UsuarioResponse> convertEntityToDtoUser(List<Usuario> usuarios) {
         return usuarios.stream()
-                .map(this::convertEntityToDto)
+                .map(this::convertEntityToDtoUser)
+                .collect(Collectors.toList());
+    }
+
+    public List<RecompensaResponse> convertEntityToDtoRecompensa(List<Recompensa> recompensas) {
+        return recompensas.stream()
+                .map(this::convertEntityToDtoRecompensa)
                 .collect(Collectors.toList());
     }
 }

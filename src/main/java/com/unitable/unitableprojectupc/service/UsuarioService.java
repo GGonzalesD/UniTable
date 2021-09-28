@@ -2,8 +2,10 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.UserType;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
-import com.unitable.unitableprojectupc.dto.UsuarioResponse;
+import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.exception.UserNotFoundException;
+import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +13,18 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private RecompensaRepository recompensaRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Usuario createUser(UsuarioRequest usuarioRequest) {
@@ -31,6 +38,18 @@ public class UsuarioService {
         return usuarios;
     }
 
+    @Transactional(readOnly = true)
+    public Usuario findUsuarioById(Long id) {
+        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(id));
+        return usuario.orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Recompensa> findRecompensasByUserId(Long id) {
+        Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(id));
+        return recompensas.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+    }
+
     private Usuario initUsuario(UsuarioRequest usuarioRequest) {
         Usuario usuario = new Usuario();
         usuario.setNombres(usuarioRequest.getNombres());
@@ -42,6 +61,7 @@ public class UsuarioService {
         usuario.setNum_monedas(0);
         usuario.setIsPremium(false);
         usuario.setTipo_usuario(UserType.ESTUDIANTE);
+        usuario.setRecompensas(new ArrayList<Recompensa>());
         return usuario;
     }
 }

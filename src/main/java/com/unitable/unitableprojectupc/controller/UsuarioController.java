@@ -1,8 +1,10 @@
 package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
+import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.service.UsuarioService;
 import io.swagger.annotations.Api;
@@ -28,14 +30,29 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioResponse> createUser(@RequestBody UsuarioRequest usuarioRequest) {
         Usuario usuario = usuarioService.createUser(usuarioRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDto(usuario), HttpStatus.OK);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<UsuarioResponse>> findAll() {
         List<Usuario> usuarios = usuarioService.findAllUsers();
         return new ResponseEntity<List<UsuarioResponse>>(
-                entityDtoConverter.convertEntityToDto(usuarios),
+                entityDtoConverter.convertEntityToDtoUser(usuarios),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> findUsuarioById(@PathVariable Long id) {
+        Usuario usuario = usuarioService.findUsuarioById(id);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/{id)/recompensas")
+    public ResponseEntity<List<RecompensaResponse>> findRecompensasByUserId(@PathVariable Long id) {
+        List<Recompensa> recompensas = usuarioService.findRecompensasByUserId(id);
+        return new ResponseEntity<List<RecompensaResponse>>(
+                entityDtoConverter.convertEntityToDtoRecompensa(recompensas),
                 HttpStatus.OK);
     }
 }

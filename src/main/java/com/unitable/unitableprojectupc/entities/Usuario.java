@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -45,5 +46,8 @@ public class Usuario {
     @Column(name = "tipo_usuario")
     @Enumerated(value = EnumType.STRING)
     private UserType tipo_usuario;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Recompensa> recompensas;
 
 }
