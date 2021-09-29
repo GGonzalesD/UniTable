@@ -1,9 +1,11 @@
 package com.unitable.unitableprojectupc.common;
 
 import com.unitable.unitableprojectupc.dto.ActividadResponse;
+import com.unitable.unitableprojectupc.dto.ChatResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
 import com.unitable.unitableprojectupc.entities.Actividad;
+import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import org.modelmapper.ModelMapper;
@@ -46,6 +48,16 @@ public class EntityDtoConverter {
     public List<ActividadResponse> convertEntityToDtoActividad(List<Actividad> actividades) {
         return actividades.stream()
                 .map(this::convertEntityToDtoActividad)
+                .collect(Collectors.toList());
+    }
+
+    public ChatResponse convertEntityToDtoChat(Chat chat){
+        return modelMapper.map(chat, ChatResponse.class);
+    }
+
+    public List<ChatResponse> convertEntityToDtoChat(List<Chat> chats){
+        return chats.stream()
+                .map(this::convertEntityToDtoChat)
                 .collect(Collectors.toList());
     }
 }
