@@ -1,9 +1,6 @@
 package com.unitable.unitableprojectupc.dto;
 
-
 import lombok.Getter;
-
-import java.util.Date;
 
 @Getter
 

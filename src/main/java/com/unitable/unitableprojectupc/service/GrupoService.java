@@ -2,10 +2,7 @@ package com.unitable.unitableprojectupc.service;
 
 
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
-import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.entities.Grupo;
-import com.unitable.unitableprojectupc.entities.Recompensa;
-import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.entities.UsuarioGrupo;
 import com.unitable.unitableprojectupc.repository.GrupoInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
