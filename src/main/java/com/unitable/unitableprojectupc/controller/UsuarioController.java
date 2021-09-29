@@ -50,6 +50,20 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/userinfo")
+    public ResponseEntity<List<UsuarioResponse>> findUsuarioByNombresAndApellidos(@RequestParam String nombres, @RequestParam String apellidos) {
+        List<Usuario> usuarios = usuarioService.finUsuarioByNombresAndApellidos(nombres, apellidos);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuarios),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/userlogin")
+    public ResponseEntity<UsuarioResponse> findUsuarioByCorreoAndPassword(@RequestParam String correo, @RequestParam String password) {
+        Usuario usuario = usuarioService.finUsuarioByCorreoAndPassword(correo, password);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+                HttpStatus.OK);
+    }
+
     @GetMapping("/{id)/recompensas")
     public ResponseEntity<List<RecompensaResponse>> findRecompensasByUserId(@PathVariable Long id) {
         List<Recompensa> recompensas = usuarioService.findRecompensasByUserId(id);

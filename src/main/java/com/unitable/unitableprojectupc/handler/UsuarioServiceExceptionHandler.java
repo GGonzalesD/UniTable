@@ -1,5 +1,6 @@
 package com.unitable.unitableprojectupc.handler;
 
+import com.unitable.unitableprojectupc.exception.IncorrectUsuarioRequestException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.exception.UsuarioServiceExceptionResponse;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,29 @@ import java.time.LocalDateTime;
 @RestController
 public class UsuarioServiceExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleAllException(Exception exception, WebRequest request) {
+        UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
+                exception.getMessage(), request.getDescription(false),
+                HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(IncorrectUsuarioRequestException.class)
+    public ResponseEntity<Object> handleIncorrectRequest(Exception exception, WebRequest request) {
+        UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
+                exception.getMessage(), request.getDescription(false),
+                HttpStatus.BAD_REQUEST, LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleNotFound(Exception exception, WebRequest request) {
         UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
                 exception.getMessage(), request.getDescription(false),
-                HttpStatus.BAD_REQUEST, LocalDateTime.now()
+                HttpStatus.NOT_FOUND, LocalDateTime.now()
         );
         return new ResponseEntity<>(response, response.getStatus());
     }

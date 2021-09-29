@@ -12,8 +12,5 @@ public class GrupoRequest {
     private String nombre;
     private String tema;
     private String descripcion;
-    private Date fecha_creacion;
-    private Date fecha_fin;
-
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "grupo")
+@Table(name = "grupos")
 
 public class Grupo {
 
@@ -38,5 +38,13 @@ public class Grupo {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha_fin;
 
+    @OneToOne
+    private Curso curso;
+
+    @OneToOne
+    private Chat chat;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "grupo")
+    private List<UsuarioGrupo> usuarioGrupos;
 
 }

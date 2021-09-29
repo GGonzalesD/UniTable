@@ -20,7 +20,7 @@ import io.swagger.annotations.Api;
 
 @Api
 @RestController
-@RequestMapping("/chat") 
+@RequestMapping("/chats")
 public class ChatController {
 	@Autowired
     private ChatService chatService;
