@@ -30,7 +30,7 @@ public class SwaggerConfig {
                 "This API provides all methods required for UniTable management",
                 "1.0",
                 "TERMS OF SERVICE URL",
-                new Contact("HampCode","https://github.com/gitHAMP","devacademyweb@gmail.com"),
+                new Contact("UniTable","https://github.com/GGonzalesD/UniTable","u202021097@upc.edu.pe"),
                 "LICENSE",
                 "LICENSE URL",
                 Collections.emptyList()
