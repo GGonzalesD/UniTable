@@ -1,13 +1,7 @@
 package com.unitable.unitableprojectupc.common;
 
-import com.unitable.unitableprojectupc.dto.ActividadResponse;
-import com.unitable.unitableprojectupc.dto.ChatResponse;
-import com.unitable.unitableprojectupc.dto.RecompensaResponse;
-import com.unitable.unitableprojectupc.dto.UsuarioResponse;
-import com.unitable.unitableprojectupc.entities.Actividad;
-import com.unitable.unitableprojectupc.entities.Chat;
-import com.unitable.unitableprojectupc.entities.Recompensa;
-import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.dto.*;
+import com.unitable.unitableprojectupc.entities.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +28,20 @@ public class EntityDtoConverter {
                 .map(this::convertEntityToDtoUser)
                 .collect(Collectors.toList());
     }
+
+
+    public GrupoResponse convertEntityToDtoGrupo(Grupo grupo){
+        return modelMapper.map(grupo, GrupoResponse.class);
+
+    }
+
+    public List<GrupoResponse> convertEntityToDtoGrupo(List<Grupo> grupos) {
+        return grupos.stream()
+                .map(this::convertEntityToDtoGrupo)
+                .collect(Collectors.toList());
+    }
+
+
 
     public List<RecompensaResponse> convertEntityToDtoRecompensa(List<Recompensa> recompensas) {
         return recompensas.stream()
