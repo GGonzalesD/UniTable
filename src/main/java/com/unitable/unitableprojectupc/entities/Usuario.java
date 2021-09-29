@@ -50,4 +50,7 @@ public class Usuario {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
     private List<Recompensa> recompensas;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Actividad> actividades;
+
 }

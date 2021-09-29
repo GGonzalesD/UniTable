@@ -1,9 +1,11 @@
 package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+import com.unitable.unitableprojectupc.dto.ActividadResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
+import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.service.UsuarioService;
@@ -53,6 +55,14 @@ public class UsuarioController {
         List<Recompensa> recompensas = usuarioService.findRecompensasByUserId(id);
         return new ResponseEntity<List<RecompensaResponse>>(
                 entityDtoConverter.convertEntityToDtoRecompensa(recompensas),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/{id)/actividades")
+    public ResponseEntity<List<ActividadResponse>> findActividadesByUserId(@PathVariable Long id) {
+        List<Actividad> actividades = usuarioService.findActividadesByUserId(id);
+        return new ResponseEntity<List<ActividadResponse>>(
+                entityDtoConverter.convertEntityToDtoActividad(actividades),
                 HttpStatus.OK);
     }
 }

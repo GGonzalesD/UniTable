@@ -1,7 +1,9 @@
 package com.unitable.unitableprojectupc.common;
 
+import com.unitable.unitableprojectupc.dto.ActividadResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
+import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import org.modelmapper.ModelMapper;
@@ -34,6 +36,16 @@ public class EntityDtoConverter {
     public List<RecompensaResponse> convertEntityToDtoRecompensa(List<Recompensa> recompensas) {
         return recompensas.stream()
                 .map(this::convertEntityToDtoRecompensa)
+                .collect(Collectors.toList());
+    }
+
+    public ActividadResponse convertEntityToDtoActividad(Actividad actividad) {
+        return modelMapper.map(actividad, ActividadResponse.class);
+    }
+
+    public List<ActividadResponse> convertEntityToDtoActividad(List<Actividad> actividades) {
+        return actividades.stream()
+                .map(this::convertEntityToDtoActividad)
                 .collect(Collectors.toList());
     }
 }

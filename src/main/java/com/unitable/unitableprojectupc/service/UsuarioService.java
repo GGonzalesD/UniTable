@@ -2,9 +2,11 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.UserType;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
+import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
+import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class UsuarioService {
 
     @Autowired
     private RecompensaRepository recompensaRepository;
+
+    @Autowired
+    private ActividadRepository actividadRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Usuario createUser(UsuarioRequest usuarioRequest) {
@@ -50,6 +55,12 @@ public class UsuarioService {
         return recompensas.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
     }
 
+    @Transactional(readOnly = true)
+    public List<Actividad> findActividadesByUserId(Long id) {
+        Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(id));
+        return actividades.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+    }
+
     private Usuario initUsuario(UsuarioRequest usuarioRequest) {
         Usuario usuario = new Usuario();
         usuario.setNombres(usuarioRequest.getNombres());
@@ -62,6 +73,7 @@ public class UsuarioService {
         usuario.setIsPremium(false);
         usuario.setTipo_usuario(UserType.ESTUDIANTE);
         usuario.setRecompensas(new ArrayList<Recompensa>());
+        usuario.setActividades(new ArrayList<Actividad>());
         return usuario;
     }
 }
