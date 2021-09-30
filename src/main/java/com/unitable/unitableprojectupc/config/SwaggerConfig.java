@@ -26,7 +26,7 @@ public class SwaggerConfig {
 
     private ApiInfo getApiInfo() {
         return new ApiInfo(
-                "Order Service API",
+                "UniTable Service API",
                 "This API provides all methods required for UniTable management",
                 "1.0",
                 "TERMS OF SERVICE URL",
