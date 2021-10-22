@@ -9,8 +9,10 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Api
@@ -36,5 +38,16 @@ public class ActividadController {
         return new ResponseEntity<List<ActividadResponse>>(
                 entityDtoConverter.convertEntityToDtoActividad(actividades),
                 HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteActividadById(@PathVariable Long id){
+        actividadService.deleteActividadById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ActividadResponse> updateActividad(@PathVariable Long id,@RequestBody @Validated ActividadRequest actividadRequest){
+        Actividad actividad = actividadService.updateActividad(id, actividadRequest);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
     }
 }

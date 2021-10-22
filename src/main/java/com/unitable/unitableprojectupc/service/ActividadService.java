@@ -1,8 +1,11 @@
 package com.unitable.unitableprojectupc.service;
 
+import com.unitable.unitableprojectupc.common.ActividadValidator;
 import com.unitable.unitableprojectupc.dto.ActividadRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
+import com.unitable.unitableprojectupc.exception.ActividadNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -40,4 +43,25 @@ public class ActividadService {
         return actividad;
     }
 
+    @Transactional
+    public void deleteActividadById(Long actividadId){
+        Actividad actividad = actividadRepository.findById(actividadId)
+                .orElseThrow(()-> new ActividadNotFoundException("id no encontrado"));
+        actividadRepository.delete(actividad);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public Actividad updateActividad(Long id, ActividadRequest actividadRequest){
+        ActividadValidator.validateActividad(actividadRequest);
+        Actividad actividadFromDb = actividadRepository.getById(id);
+        Actividad actividad = initActividad(actividadRequest);
+
+        actividadFromDb.setNombre(actividad.getNombre());
+        actividadFromDb.setDetalles(actividad.getDetalles());
+        actividadFromDb.setFecha_fin(actividad.getFecha_ini());
+        actividadFromDb.setFecha_fin(actividad.getFecha_fin());
+        actividadFromDb.setDuracion_min(actividad.getDuracion_min());
+
+        return actividadRepository.save(actividadFromDb);
+    }
 }
