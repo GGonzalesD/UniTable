@@ -61,6 +61,14 @@ public class UsuarioService {
         return usuario.orElseThrow(() -> new UserNotFoundException("No se encontro al usuario"));
     }
 
+    @Transactional
+    public Usuario deleteUsuarioById(Long usuarioId){
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new UserNotFoundException("id no encontrado"));
+        usuarioRepository.delete(usuario);
+        return usuario;
+    }
+
     @Transactional(readOnly = true)
     public List<Recompensa> findRecompensasByUserId(Long id) {
         Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(id));
@@ -72,6 +80,8 @@ public class UsuarioService {
         Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(id));
         return actividades.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
     }
+
+
 
     private Usuario initUsuario(UsuarioRequest usuarioRequest) {
         Usuario usuario = new Usuario();

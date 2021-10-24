@@ -64,6 +64,13 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> deleteUsuarioById(@PathVariable Long id){
+        Usuario usuario = usuarioService.deleteUsuarioById(id);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+                HttpStatus.OK);
+    }
+
     @GetMapping("/{id)/recompensas")
     public ResponseEntity<List<RecompensaResponse>> findRecompensasByUserId(@PathVariable Long id) {
         List<Recompensa> recompensas = usuarioService.findRecompensasByUserId(id);
