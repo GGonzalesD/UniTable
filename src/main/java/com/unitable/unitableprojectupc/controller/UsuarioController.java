@@ -2,6 +2,7 @@ package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
 import com.unitable.unitableprojectupc.dto.ActividadResponse;
+import com.unitable.unitableprojectupc.dto.JoinResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
@@ -33,6 +34,14 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponse> createUser(@RequestBody UsuarioRequest usuarioRequest) {
         Usuario usuario = usuarioService.createUser(usuarioRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario), HttpStatus.OK);
+    }
+
+    @PutMapping("/join")
+    public ResponseEntity<JoinResponse> joinToOneGroup(@RequestParam Long userId, @RequestParam Long groupId) {
+        usuarioService.joinToAGroup(userId, groupId);
+
+        return new ResponseEntity<>(entityDtoConverter.convertUserGroupToDtoJoin(userId, groupId),
+                HttpStatus.OK);
     }
 
     @GetMapping

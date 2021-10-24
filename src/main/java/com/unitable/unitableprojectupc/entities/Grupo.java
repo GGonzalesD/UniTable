@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "grupos")
-
 public class Grupo {
 
     @Id
@@ -41,10 +40,10 @@ public class Grupo {
     @ManyToOne
     private Curso curso;
 
-    @OneToOne
+    @ManyToOne
     private Chat chat;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "grupo")
-    private List<UsuarioGrupo> usuarioGrupos;
+    @ManyToMany(mappedBy = "grupos")
+    private List<Usuario> usuarios;
 
 }

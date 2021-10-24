@@ -1,11 +1,12 @@
 package com.unitable.unitableprojectupc.service;
 
-import com.unitable.unitableprojectupc.common.UserType;
 import com.unitable.unitableprojectupc.common.UsuarioValidator;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.entities.*;
+import com.unitable.unitableprojectupc.exception.GrupoNotFoundException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
+import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,29 @@ public class UsuarioService {
     @Autowired
     private ActividadRepository actividadRepository;
 
+    @Autowired
+    private GrupoRepository grupoRepository;
+
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Usuario createUser(UsuarioRequest usuarioRequest) {
         UsuarioValidator.validateUser(usuarioRequest);
         Usuario newUser = initUsuario(usuarioRequest);
         return usuarioRepository.save(newUser);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public Usuario joinToAGroup(Long userId, Long groupId) {
+        
+        Usuario usuario = usuarioRepository.findById(userId)
+			.orElseThrow( () -> new UserNotFoundException("User '"+userId+"' Not found"));
+
+        Grupo grupo = grupoRepository.findById(groupId)
+            .orElseThrow( () -> new GrupoNotFoundException("Grupo '"+groupId+"' Not found") );
+
+        if(usuario.getGrupos().contains(grupo) == false)
+            usuario.getGrupos().add(grupo);
+
+        return usuarioRepository.save(usuario);
     }
 
     @Transactional(readOnly = true)
@@ -93,11 +112,11 @@ public class UsuarioService {
         usuario.setNum_act_completas(Integer.valueOf(0));
         usuario.setNum_monedas(Integer.valueOf(0));
         usuario.setIsPremium(Boolean.FALSE);
-        usuario.setTipo_usuario(UserType.ESTUDIANTE);
+        usuario.setTipo_usuario(usuarioRequest.getTipo_usuario());
         usuario.setRecompensas(new ArrayList<Recompensa>());
         usuario.setActividades(new ArrayList<Actividad>());
         usuario.setMensajes(new ArrayList<Mensaje>());
-        usuario.setUsuarioGrupos(new ArrayList<UsuarioGrupo>());
+        usuario.setGrupos(new ArrayList<Grupo>());
         return usuario;
     }
 }

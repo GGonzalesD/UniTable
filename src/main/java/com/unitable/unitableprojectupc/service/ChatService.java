@@ -25,6 +25,8 @@ public class ChatService {
         return chatRepository.save(newChat);
     }
 
+    
+
 	@Transactional(readOnly = true)
     public List<Chat> findAllChats() {
         List<Chat> chats = chatRepository.findAll();

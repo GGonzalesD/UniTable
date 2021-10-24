@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-
 public class GrupoRequest {
 
     @NotNull

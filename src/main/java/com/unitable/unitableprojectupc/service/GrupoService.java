@@ -5,7 +5,7 @@ import com.unitable.unitableprojectupc.common.GrupoValidator;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
-import com.unitable.unitableprojectupc.entities.UsuarioGrupo;
+import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,7 @@ public class GrupoService {
         grupo.setFecha_fin(null);
         grupo.setTema(grupoRequest.getTema());
         grupo.setCurso(curso);
-        grupo.setUsuarioGrupos(new ArrayList<UsuarioGrupo>());
+        grupo.setUsuarios(new ArrayList<Usuario>());
 
         return grupo;
     }

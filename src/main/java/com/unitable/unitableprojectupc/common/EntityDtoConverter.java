@@ -19,6 +19,13 @@ public class EntityDtoConverter {
         return modelMapper.map(usuario, UsuarioResponse.class);
     }
 
+    public JoinResponse convertUserGroupToDtoJoin(Long usuarioId, Long grupoId) {
+        return JoinResponse.builder()
+                .usuario_id(usuarioId)
+                .grupo_id(grupoId)
+                .build();
+    }
+
     public RecompensaResponse convertEntityToDtoRecompensa(Recompensa recompensa) {
         return modelMapper.map(recompensa, RecompensaResponse.class);
     }
@@ -42,10 +49,6 @@ public class EntityDtoConverter {
 
     public MensajeResponse convertEntityToDtoMensaje(Mensaje mensaje) {
         return modelMapper.map(mensaje, MensajeResponse.class);
-    }
-
-    public UsuarioGrupoResponse convertEntityToDtoUsuarioGrupo(UsuarioGrupo usuarioGrupo) {
-        return modelMapper.map(usuarioGrupo, UsuarioGrupoResponse.class);
     }
 
     public List<UsuarioResponse> convertEntityToDtoUser(List<Usuario> usuarios) {
@@ -87,12 +90,6 @@ public class EntityDtoConverter {
     public List<MensajeResponse> convertEntityToDtoMensaje(List<Mensaje> mensajes) {
         return mensajes.stream()
                 .map(this::convertEntityToDtoMensaje)
-                .collect(Collectors.toList());
-    }
-
-    public List<UsuarioGrupoResponse> convertEntityToDtoUsuarioGrupo(List<UsuarioGrupo> usuarioGrupos) {
-        return usuarioGrupos.stream()
-                .map(this::convertEntityToDtoUsuarioGrupo)
                 .collect(Collectors.toList());
     }
 }
