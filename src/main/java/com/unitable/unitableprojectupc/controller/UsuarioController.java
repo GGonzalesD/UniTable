@@ -2,11 +2,12 @@ package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
 import com.unitable.unitableprojectupc.dto.ActividadResponse;
-import com.unitable.unitableprojectupc.dto.JoinResponse;
+import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
 import com.unitable.unitableprojectupc.entities.Actividad;
+import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.service.UsuarioService;
@@ -37,10 +38,10 @@ public class UsuarioController {
     }
 
     @PutMapping("/join")
-    public ResponseEntity<JoinResponse> joinToOneGroup(@RequestParam Long userId, @RequestParam Long groupId) {
-        usuarioService.joinToAGroup(userId, groupId);
+    public ResponseEntity<List<GrupoResponse>> joinToOneGroup(@RequestParam Long userId, @RequestParam Long groupId) {
+        List<Grupo> grupos = usuarioService.joinToAGroup(userId, groupId);
 
-        return new ResponseEntity<>(entityDtoConverter.convertUserGroupToDtoJoin(userId, groupId),
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupos),
                 HttpStatus.OK);
     }
 

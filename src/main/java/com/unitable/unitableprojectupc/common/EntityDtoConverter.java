@@ -19,13 +19,6 @@ public class EntityDtoConverter {
         return modelMapper.map(usuario, UsuarioResponse.class);
     }
 
-    public JoinResponse convertUserGroupToDtoJoin(Long usuarioId, Long grupoId) {
-        return JoinResponse.builder()
-                .usuario_id(usuarioId)
-                .grupo_id(grupoId)
-                .build();
-    }
-
     public RecompensaResponse convertEntityToDtoRecompensa(Recompensa recompensa) {
         return modelMapper.map(recompensa, RecompensaResponse.class);
     }

@@ -42,7 +42,7 @@ public class UsuarioService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public Usuario joinToAGroup(Long userId, Long groupId) {
+    public List<Grupo> joinToAGroup(Long userId, Long groupId) {
         
         Usuario usuario = usuarioRepository.findById(userId)
 			.orElseThrow( () -> new UserNotFoundException("User '"+userId+"' Not found"));
@@ -53,7 +53,8 @@ public class UsuarioService {
         if(usuario.getGrupos().contains(grupo) == false)
             usuario.getGrupos().add(grupo);
 
-        return usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
+        return usuario.getGrupos();
     }
 
     @Transactional(readOnly = true)
