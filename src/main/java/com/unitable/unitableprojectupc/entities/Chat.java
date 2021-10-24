@@ -24,9 +24,6 @@ public class Chat {
 	@Column(name = "detalles")
     private String detalles;
 
-    @OneToOne
-    private Grupo grupo;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "chat")
     private List<Mensaje> mensajes;
 }

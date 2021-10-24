@@ -22,7 +22,4 @@ public class Curso {
 
     @Column(name = "descripcion")
     private String descripcion;
-
-    @OneToOne
-    private Grupo grupo;
 }

@@ -1,7 +1,9 @@
 package com.unitable.unitableprojectupc.service;
 
+import java.util.Optional;
 import com.unitable.unitableprojectupc.dto.CursoRequest;
 import com.unitable.unitableprojectupc.entities.Curso;
+import com.unitable.unitableprojectupc.exception.CursoNotFoundException;
 import com.unitable.unitableprojectupc.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,12 @@ public class CursoService {
     public List<Curso> findAllCursos() {
         List<Curso> cursos = cursoRepository.findAll();
         return cursos;
+    }
+
+    @Transactional(readOnly = true)
+    public Curso findCursoById(Long id) {
+        Optional<Curso> curso = Optional.ofNullable(cursoRepository.findCursoById(id));
+        return curso.orElseThrow(() -> new CursoNotFoundException("Curso con id '" + id + "'' no encontrado"));
     }
 
     private Curso initCurso(CursoRequest cursoRequest) {

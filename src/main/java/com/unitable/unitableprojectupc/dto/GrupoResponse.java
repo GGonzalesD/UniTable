@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
+import com.unitable.unitableprojectupc.entities.Curso;
+
 @Getter
 @Setter
 
@@ -16,6 +18,6 @@ public class GrupoResponse {
     private String descripcion;
     private Date fecha_creacion;
     private Date fecha_fin;
-
+    private Curso curso;
 
 }

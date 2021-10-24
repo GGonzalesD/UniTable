@@ -38,7 +38,7 @@ public class Grupo {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha_fin;
 
-    @OneToOne
+    @ManyToOne
     private Curso curso;
 
     @OneToOne
