@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GrupoInfo extends JpaRepository<Grupo, Long> {
+public interface GrupoRepository extends JpaRepository<Grupo, Long> {
     Grupo findGrupoById(Long id);
 
 }

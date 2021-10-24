@@ -6,7 +6,7 @@ import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.UsuarioGrupo;
-import com.unitable.unitableprojectupc.repository.GrupoInfo;
+import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -23,26 +23,26 @@ import java.util.Optional;
 
 public class GrupoService {
     @Autowired
-    private GrupoInfo grupoInfo;
+    private GrupoRepository grupoRepository;
     @Autowired
     private CursoService cursoService;
 
     @Transactional(readOnly = true)
     public List<Grupo> findAllGroups() {
-        List<Grupo> grupos = grupoInfo.findAll();
+        List<Grupo> grupos = grupoRepository.findAll();
         return grupos;
     }
 
     @Transactional(readOnly = true)
     public Grupo findGrupoById(Long id) {
-        Optional<Grupo> grupo = Optional.ofNullable(grupoInfo.findGrupoById(id));
+        Optional<Grupo> grupo = Optional.ofNullable(grupoRepository.findGrupoById(id));
         return grupo.orElseThrow();
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation =Propagation.REQUIRED)
     public Grupo createGrupo(GrupoRequest grupoRequest) {
         Grupo newGrupo = initGrupo(grupoRequest);
-        return grupoInfo.save(newGrupo);
+        return grupoRepository.save(newGrupo);
     }
 
     private Grupo initGrupo(GrupoRequest grupoRequest) {
