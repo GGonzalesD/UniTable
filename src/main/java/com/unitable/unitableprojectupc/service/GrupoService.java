@@ -6,7 +6,10 @@ import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
+import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -26,6 +29,8 @@ public class GrupoService {
     private GrupoRepository grupoRepository;
     @Autowired
     private CursoService cursoService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Transactional(readOnly = true)
     public List<Grupo> findAllGroups() {
@@ -37,6 +42,18 @@ public class GrupoService {
     public Grupo findGrupoById(Long id) {
         Optional<Grupo> grupo = Optional.ofNullable(grupoRepository.findGrupoById(id));
         return grupo.orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Grupo> findgrupoByUsuarioAndCurso(Long userId, Long cursoId) {
+        
+        usuarioRepository.findById(userId)
+			.orElseThrow( () -> new UserNotFoundException("User '"+userId+"' Not found"));
+        cursoService.findCursoById(cursoId);
+
+        List<Grupo> grupos = grupoRepository.findByUsuarioAndCurso(userId, cursoId);
+
+        return grupos;
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation =Propagation.REQUIRED)

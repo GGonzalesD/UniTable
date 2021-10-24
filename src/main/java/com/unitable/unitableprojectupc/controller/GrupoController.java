@@ -27,6 +27,12 @@ public class GrupoController {
     @Autowired
     private EntityDtoConverter entityDtoConverter;
 
+    @GetMapping("/filter_cursos")
+    public ResponseEntity<List<GrupoResponse>> findGrupoByUsuarioAndCurso(@RequestParam Long userId, @RequestParam Long cursoId) {
+        List<Grupo> grupos = grupoService.findgrupoByUsuarioAndCurso(userId, cursoId);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupos),
+                HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<GrupoResponse> createGrupo(@RequestBody GrupoRequest grupoRequest) {
