@@ -1,5 +1,7 @@
 package com.unitable.unitableprojectupc.handler;
 
+import com.unitable.unitableprojectupc.exception.CursoNotFoundException;
+import com.unitable.unitableprojectupc.exception.GrupoBadRequestException;
 import com.unitable.unitableprojectupc.exception.IncorrectUsuarioRequestException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.exception.UsuarioServiceExceptionResponse;
@@ -31,6 +33,24 @@ public class UsuarioServiceExceptionHandler extends ResponseEntityExceptionHandl
         UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
                 exception.getMessage(), request.getDescription(false),
                 HttpStatus.BAD_REQUEST, LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(GrupoBadRequestException.class)
+    public ResponseEntity<Object> handleGrupoIncorrectRequest(Exception exception, WebRequest request) {
+        UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
+                exception.getMessage(), request.getDescription(false),
+                HttpStatus.BAD_REQUEST, LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(CursoNotFoundException.class)
+    public ResponseEntity<Object> handleCursoNotFound(Exception exception, WebRequest request) {
+        UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
+                exception.getMessage(), request.getDescription(false),
+                HttpStatus.NOT_FOUND, LocalDateTime.now()
         );
         return new ResponseEntity<>(response, response.getStatus());
     }

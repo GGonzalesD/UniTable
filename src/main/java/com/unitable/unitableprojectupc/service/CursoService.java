@@ -1,6 +1,5 @@
 package com.unitable.unitableprojectupc.service;
 
-import java.util.Optional;
 import com.unitable.unitableprojectupc.dto.CursoRequest;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.exception.CursoNotFoundException;
@@ -33,8 +32,9 @@ public class CursoService {
 
     @Transactional(readOnly = true)
     public Curso findCursoById(Long id) {
-        Optional<Curso> curso = Optional.ofNullable(cursoRepository.findCursoById(id));
-        return curso.orElseThrow(() -> new CursoNotFoundException("Curso con id '" + id + "'' no encontrado"));
+        Curso curso = cursoRepository.findById(id)
+			.orElseThrow( () -> new CursoNotFoundException("Curso con ID '"+id+"' no encontrado"));
+        return curso;
     }
 
     private Curso initCurso(CursoRequest cursoRequest) {
