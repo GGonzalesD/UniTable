@@ -5,7 +5,6 @@ import com.unitable.unitableprojectupc.dto.ActividadRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.exception.ActividadNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
