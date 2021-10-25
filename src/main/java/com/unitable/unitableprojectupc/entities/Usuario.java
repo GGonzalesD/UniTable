@@ -68,4 +68,13 @@ public class Usuario {
     )
     private List<Grupo> grupos;
 
+    /*
+    @ManyToMany
+    @JoinTable(name = "usuario_contactos",
+        joinColumns = @JoinColumn(name = "user_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "contacto_id", nullable = false)
+    )
+    private List<Usuario> contactos;
+*/
+
 }

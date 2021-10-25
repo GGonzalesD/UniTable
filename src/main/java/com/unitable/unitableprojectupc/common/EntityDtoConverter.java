@@ -45,7 +45,13 @@ public class EntityDtoConverter {
     }
 
     public MensajeResponse convertEntityToDtoMensaje(Mensaje mensaje) {
-        return modelMapper.map(mensaje, MensajeResponse.class);
+        //return modelMapper.map(mensaje, MensajeResponse.class);
+        MensajeResponse messageResponse = modelMapper.map(mensaje, MensajeResponse.class);
+        if(mensaje.getChat()!=null)
+            messageResponse.setChat_id( mensaje.getChat().getId() );
+        if(mensaje.getUsuario()!=null)
+            messageResponse.setUsuario_id( mensaje.getUsuario().getId() );
+        return messageResponse;
     }
 
     public List<UsuarioResponse> convertEntityToDtoUser(List<Usuario> usuarios) {
