@@ -40,7 +40,8 @@ public class Grupo {
     @ManyToOne
     private Curso curso;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "chat_id", referencedColumnName = "id")
     private Chat chat;
 
     @ManyToMany(mappedBy = "grupos")

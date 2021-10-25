@@ -24,8 +24,9 @@ public class EntityDtoConverter {
     }
 
     public GrupoResponse convertEntityToDtoGrupo(Grupo grupo){
-        return modelMapper.map(grupo, GrupoResponse.class);
-
+        GrupoResponse grupoResponse = modelMapper.map(grupo, GrupoResponse.class);
+        grupoResponse.setChat( convertEntityToDtoChat(grupo.getChat()) );
+        return grupoResponse;
     }
 
     public ActividadResponse convertEntityToDtoActividad(Actividad actividad) {
@@ -33,7 +34,10 @@ public class EntityDtoConverter {
     }
 
     public ChatResponse convertEntityToDtoChat(Chat chat){
-        return modelMapper.map(chat, ChatResponse.class);
+        ChatResponse chatResponse = modelMapper.map(chat, ChatResponse.class);
+        if(chat.getGrupo()!=null)
+            chatResponse.setGrupo_id(chat.getGrupo().getId());
+        return chatResponse;
     }
 
     public CursoResponse convertEntityToDtoCurso(Curso curso) {

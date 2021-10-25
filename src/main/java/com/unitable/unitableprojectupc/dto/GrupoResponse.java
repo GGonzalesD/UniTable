@@ -18,6 +18,7 @@ public class GrupoResponse {
     private String descripcion;
     private Date fecha_creacion;
     private Date fecha_fin;
+    private ChatResponse chat;
     private Curso curso;
 
 }

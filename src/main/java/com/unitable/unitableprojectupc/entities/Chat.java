@@ -24,6 +24,10 @@ public class Chat {
 	@Column(name = "detalles")
     private String detalles;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "chat")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_id")
     private List<Mensaje> mensajes;
+
+    @OneToOne(mappedBy = "chat")
+    private Grupo grupo;
 }

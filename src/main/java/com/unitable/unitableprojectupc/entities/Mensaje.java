@@ -24,9 +24,11 @@ public class Mensaje {
     @Column(name = "hora_mensaje")
     private Time hora_mensaje;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="usuario_id", referencedColumnName = "id")
     private Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="chat_id", referencedColumnName = "id")
     private Chat chat;
 }

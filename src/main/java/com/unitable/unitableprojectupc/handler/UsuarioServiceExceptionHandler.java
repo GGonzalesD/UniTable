@@ -1,5 +1,6 @@
 package com.unitable.unitableprojectupc.handler;
 
+import com.unitable.unitableprojectupc.exception.ChatNotFoundException;
 import com.unitable.unitableprojectupc.exception.CursoNotFoundException;
 import com.unitable.unitableprojectupc.exception.GrupoBadRequestException;
 import com.unitable.unitableprojectupc.exception.IncorrectUsuarioRequestException;
@@ -48,6 +49,15 @@ public class UsuarioServiceExceptionHandler extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(CursoNotFoundException.class)
     public ResponseEntity<Object> handleCursoNotFound(Exception exception, WebRequest request) {
+        UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
+                exception.getMessage(), request.getDescription(false),
+                HttpStatus.NOT_FOUND, LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(ChatNotFoundException.class)
+    public ResponseEntity<Object> handleChatNotFound(Exception exception, WebRequest request) {
         UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
                 exception.getMessage(), request.getDescription(false),
                 HttpStatus.NOT_FOUND, LocalDateTime.now()

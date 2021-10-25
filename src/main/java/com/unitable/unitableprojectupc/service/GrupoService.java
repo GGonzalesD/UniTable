@@ -3,6 +3,7 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.GrupoValidator;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
+import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.Usuario;
@@ -31,6 +32,8 @@ public class GrupoService {
     private CursoService cursoService;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private ChatService chatService;
 
     @Transactional(readOnly = true)
     public List<Grupo> findAllGroups() {
@@ -65,6 +68,7 @@ public class GrupoService {
     private Grupo initGrupo(GrupoRequest grupoRequest) {
         GrupoValidator.validateGrupo(grupoRequest);
         Curso curso = cursoService.findCursoById(grupoRequest.getCurso_id());
+        Chat chat = chatService.findChatById(grupoRequest.getChat_id());
 
         Grupo grupo = new Grupo();
         grupo.setNombre(grupoRequest.getNombre());
@@ -73,6 +77,7 @@ public class GrupoService {
         grupo.setFecha_fin(null);
         grupo.setTema(grupoRequest.getTema());
         grupo.setCurso(curso);
+        grupo.setChat(chat);
         grupo.setUsuarios(new ArrayList<Usuario>());
 
         return grupo;

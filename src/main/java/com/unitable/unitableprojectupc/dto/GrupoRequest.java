@@ -15,5 +15,7 @@ public class GrupoRequest {
     private String descripcion;
     @NotNull
     private Long curso_id;
+    @NotNull
+    private Long chat_id;
 
 }
