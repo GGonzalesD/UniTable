@@ -1,7 +1,10 @@
 package com.unitable.unitableprojectupc.service;
 
+import com.unitable.unitableprojectupc.common.MessageValidator;
 import com.unitable.unitableprojectupc.dto.MensajeRequest;
+import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Mensaje;
+import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.repository.MensajeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +21,15 @@ public class MensajeService {
 
     @Autowired
     private MensajeRepository mensajeRepository;
+    @Autowired
+    private ChatService chatService;
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Mensaje createMensaje(MensajeRequest mensajeRequest) {
         Mensaje newMensaje = initMensaje(mensajeRequest);
-        return mensajeRepository.save(newMensaje);
+        return newMensaje;
     }
 
     @Transactional(readOnly = true)
@@ -33,8 +40,20 @@ public class MensajeService {
 
     private Mensaje initMensaje(MensajeRequest mensajeRequest) {
         Mensaje mensaje = new Mensaje();
+
+        MessageValidator.validateUser(mensajeRequest);
+
+        Usuario usuario = usuarioService.findUsuarioById(mensajeRequest.getUsuario_id());
+        Chat chat = chatService.findChatById(mensajeRequest.getChat_id());
+
         mensaje.setMensaje(mensajeRequest.getMensaje());
         mensaje.setHora_mensaje(Time.valueOf(LocalTime.now()));
+        
+        usuario.getMensajes().add(mensaje);
+        chat.getMensajes().add(mensaje);
+        mensaje.setChat(chat);
+        mensaje.setUsuario(usuario);
+
         return mensaje;
     }
 }

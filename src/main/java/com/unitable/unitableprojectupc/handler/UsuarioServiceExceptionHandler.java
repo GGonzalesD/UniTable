@@ -4,6 +4,7 @@ import com.unitable.unitableprojectupc.exception.ChatNotFoundException;
 import com.unitable.unitableprojectupc.exception.CursoNotFoundException;
 import com.unitable.unitableprojectupc.exception.GrupoBadRequestException;
 import com.unitable.unitableprojectupc.exception.IncorrectUsuarioRequestException;
+import com.unitable.unitableprojectupc.exception.MessageBadRequestException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.exception.UsuarioServiceExceptionResponse;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,15 @@ public class UsuarioServiceExceptionHandler extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(GrupoBadRequestException.class)
     public ResponseEntity<Object> handleGrupoIncorrectRequest(Exception exception, WebRequest request) {
+        UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
+                exception.getMessage(), request.getDescription(false),
+                HttpStatus.BAD_REQUEST, LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(MessageBadRequestException.class)
+    public ResponseEntity<Object> handleMessageIncorrectRequest(Exception exception, WebRequest request) {
         UsuarioServiceExceptionResponse response = new UsuarioServiceExceptionResponse(
                 exception.getMessage(), request.getDescription(false),
                 HttpStatus.BAD_REQUEST, LocalDateTime.now()

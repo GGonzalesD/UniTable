@@ -34,10 +34,8 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public Chat findChatById(Long id) {
-        
         Chat chat = chatRepository.findById(id)
 			.orElseThrow( () -> new ChatNotFoundException("Chat con ID '"+id+"' no encontrado"));
-        
         return chat;
     }
 
