@@ -34,7 +34,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioResponse> createUser(@RequestBody UsuarioRequest usuarioRequest) {
         Usuario usuario = usuarioService.createUser(usuarioRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario), HttpStatus.OK);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario), HttpStatus.CREATED);
     }
 
     @PutMapping("/join")
@@ -70,6 +70,13 @@ public class UsuarioController {
     @GetMapping("/userlogin")
     public ResponseEntity<UsuarioResponse> findUsuarioByCorreoAndPassword(@RequestParam String correo, @RequestParam String password) {
         Usuario usuario = usuarioService.finUsuarioByCorreoAndPassword(correo, password);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+                HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> updateUsuariobyId(@PathVariable Long id, @RequestBody UsuarioRequest usuarioRequest) {
+        Usuario usuario = usuarioService.updateUsuarioById(id, usuarioRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
                 HttpStatus.OK);
     }

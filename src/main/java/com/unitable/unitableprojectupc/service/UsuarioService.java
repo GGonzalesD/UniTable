@@ -50,8 +50,10 @@ public class UsuarioService {
         Grupo grupo = grupoRepository.findById(groupId)
             .orElseThrow( () -> new GrupoNotFoundException("Grupo '"+groupId+"' Not found") );
 
-        if(usuario.getGrupos().contains(grupo) == false)
+        if(usuario.getGrupos().contains(grupo) == false) {
             usuario.getGrupos().add(grupo);
+            grupo.getUsuarios().add(usuario);
+        }
 
         usuarioRepository.save(usuario);
         return usuario.getGrupos();
@@ -79,6 +81,19 @@ public class UsuarioService {
     public Usuario finUsuarioByCorreoAndPassword(String correo, String password) {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioByCorreoAndPassword(correo, password));
         return usuario.orElseThrow(() -> new UserNotFoundException("No se encontro al usuario"));
+    }
+
+    @Transactional
+    public Usuario updateUsuarioById(Long id, UsuarioRequest usuarioRequest) {
+        UsuarioValidator.validateUser(usuarioRequest);
+        Usuario usuario = usuarioRepository.findById(id).
+                orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+        usuario.setNombres(usuarioRequest.getNombres());
+        usuario.setApellidos(usuarioRequest.getApellidos());
+        usuario.setCorreo(usuarioRequest.getCorreo());
+        usuario.setPassword(usuarioRequest.getPassword());
+        usuario.setTipo_usuario(usuarioRequest.getTipo_usuario());
+        return usuarioRepository.save(usuario);
     }
 
     @Transactional
