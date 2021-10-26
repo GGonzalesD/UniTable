@@ -74,4 +74,19 @@ public class ActividadService {
 
         return actividadRepository.save(actividadFromDb);
     }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public Actividad finishActividad(Long id){
+        Actividad actividadFromDb = actividadRepository.findById(id)
+                .orElseThrow(()-> new ActividadNotFoundException("id no encontrado"));
+
+        //Actividad actividadFromDb = actividadRepository.getById(id);
+        actividadFromDb.setActiva(Boolean.FALSE);
+
+        Usuario usuario = usuarioRepository.findUsuarioById(actividadFromDb.getUsuario().getId());
+        usuario.setNum_act_completas(usuario.getNum_act_completas() + 1);
+        usuarioRepository.save(usuario);
+
+        return actividadRepository.save(actividadFromDb);
+    }
 }

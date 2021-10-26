@@ -49,4 +49,10 @@ public class ActividadController {
         Actividad actividad = actividadService.updateActividad(id, actividadRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
     }
+
+    @PutMapping("finish/{id}")
+    public ResponseEntity<ActividadResponse> finishActividad(@PathVariable Long id){
+        Actividad actividad = actividadService.finishActividad(id);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
+    }
 }
