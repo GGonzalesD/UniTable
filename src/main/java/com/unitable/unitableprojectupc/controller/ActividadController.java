@@ -50,7 +50,7 @@ public class ActividadController {
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
     }
 
-    @PutMapping("finish/{id}")
+    @PutMapping("/finish/{id}")
     public ResponseEntity<ActividadResponse> finishActividad(@PathVariable Long id){
         Actividad actividad = actividadService.finishActividad(id);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);

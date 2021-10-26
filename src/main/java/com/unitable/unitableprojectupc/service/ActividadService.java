@@ -2,11 +2,14 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.ActividadValidator;
 import com.unitable.unitableprojectupc.dto.ActividadRequest;
+import com.unitable.unitableprojectupc.dto.RecompensaRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
+import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.exception.ActividadNotFoundException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
+import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.catalina.User;
@@ -27,6 +30,9 @@ public class ActividadService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private RecompensaRepository recompensaRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Actividad createActividad(Long id, ActividadRequest actividadRequest) {
@@ -66,6 +72,7 @@ public class ActividadService {
         ActividadValidator.validateActividad(actividadRequest);
         Actividad actividadFromDb = actividadRepository.getById(id);
 
+
         actividadFromDb.setNombre(actividadRequest.getNombre());
         actividadFromDb.setDetalles(actividadRequest.getDetalles());
         actividadFromDb.setFecha_ini(actividadRequest.getFecha_ini());
@@ -80,12 +87,22 @@ public class ActividadService {
         Actividad actividadFromDb = actividadRepository.findById(id)
                 .orElseThrow(()-> new ActividadNotFoundException("id no encontrado"));
 
-        //Actividad actividadFromDb = actividadRepository.getById(id);
         actividadFromDb.setActiva(Boolean.FALSE);
 
         Usuario usuario = usuarioRepository.findUsuarioById(actividadFromDb.getUsuario().getId());
         usuario.setNum_act_completas(usuario.getNum_act_completas() + 1);
         usuarioRepository.save(usuario);
+
+        if(usuario.getNum_act_completas() % 5 == 0)
+        {
+            Recompensa recompensa = Recompensa.builder()
+                    .nombre("Finalizar 5 actividades")
+                    .detalles("Recompensa acumulada " + (usuario.getNum_act_completas()/5))
+                    .usuario(usuario)
+                    .build();
+
+            recompensaRepository.save(recompensa);
+        }
 
         return actividadRepository.save(actividadFromDb);
     }
