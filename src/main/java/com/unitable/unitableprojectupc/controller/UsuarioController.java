@@ -88,7 +88,7 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{id)/recompensas")
+    @GetMapping("/{id}/recompensas")
     public ResponseEntity<List<RecompensaResponse>> findRecompensasByUserId(@PathVariable Long id) {
         List<Recompensa> recompensas = usuarioService.findRecompensasByUserId(id);
         return new ResponseEntity<List<RecompensaResponse>>(
@@ -96,7 +96,7 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{id)/actividades")
+    @GetMapping("/{id}/actividades")
     public ResponseEntity<List<ActividadResponse>> findActividadesByUserId(@PathVariable Long id) {
         List<Actividad> actividades = usuarioService.findActividadesByUserId(id);
         return new ResponseEntity<List<ActividadResponse>>(

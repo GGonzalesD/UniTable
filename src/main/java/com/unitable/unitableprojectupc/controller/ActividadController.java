@@ -25,9 +25,9 @@ public class ActividadController {
     @Autowired
     private EntityDtoConverter entityDtoConverter;
 
-    @PostMapping
-    public ResponseEntity<ActividadResponse> createActividad(@RequestBody ActividadRequest actividadRequest) {
-        Actividad actividad = actividadService.createActividad(actividadRequest);
+    @PostMapping("/{id}")
+    public ResponseEntity<ActividadResponse> createActividad(@PathVariable Long id, @RequestBody ActividadRequest actividadRequest) {
+        Actividad actividad = actividadService.createActividad(id, actividadRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.OK);
     }
 

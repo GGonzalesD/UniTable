@@ -3,8 +3,13 @@ package com.unitable.unitableprojectupc.service;
 import com.unitable.unitableprojectupc.common.ActividadValidator;
 import com.unitable.unitableprojectupc.dto.ActividadRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
+import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.exception.ActividadNotFoundException;
+import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
+import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+import net.bytebuddy.implementation.bytecode.Throw;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -12,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActividadService {
@@ -19,9 +25,12 @@ public class ActividadService {
     @Autowired
     private ActividadRepository actividadRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public Actividad createActividad(ActividadRequest actividadRequest) {
-        Actividad newActividad = initActividad(actividadRequest);
+    public Actividad createActividad(Long id, ActividadRequest actividadRequest) {
+        Actividad newActividad = initActividad(id, actividadRequest);
         return actividadRepository.save(newActividad);
     }
 
@@ -31,8 +40,11 @@ public class ActividadService {
         return actividades;
     }
 
-    private Actividad initActividad(ActividadRequest actividadRequest) {
+    private Actividad initActividad(Long id, ActividadRequest actividadRequest) {
+        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(id));
+        ActividadValidator.validateActividad(actividadRequest);
         Actividad actividad = new Actividad();
+        actividad.setUsuario(usuario.orElseThrow(()->new UserNotFoundException("id no encontrado")));
         actividad.setNombre(actividadRequest.getNombre());
         actividad.setDetalles(actividadRequest.getDetalles());
         actividad.setFecha_ini(actividadRequest.getFecha_ini());
@@ -53,13 +65,12 @@ public class ActividadService {
     public Actividad updateActividad(Long id, ActividadRequest actividadRequest){
         ActividadValidator.validateActividad(actividadRequest);
         Actividad actividadFromDb = actividadRepository.getById(id);
-        Actividad actividad = initActividad(actividadRequest);
 
-        actividadFromDb.setNombre(actividad.getNombre());
-        actividadFromDb.setDetalles(actividad.getDetalles());
-        actividadFromDb.setFecha_fin(actividad.getFecha_ini());
-        actividadFromDb.setFecha_fin(actividad.getFecha_fin());
-        actividadFromDb.setDuracion_min(actividad.getDuracion_min());
+        actividadFromDb.setNombre(actividadRequest.getNombre());
+        actividadFromDb.setDetalles(actividadRequest.getDetalles());
+        actividadFromDb.setFecha_ini(actividadRequest.getFecha_ini());
+        actividadFromDb.setFecha_fin(actividadRequest.getFecha_fin());
+        actividadFromDb.setDuracion_min(Integer.valueOf((int)(actividadRequest.getFecha_fin().getTime() - actividadRequest.getFecha_ini().getTime()))/60000);
 
         return actividadRepository.save(actividadFromDb);
     }
