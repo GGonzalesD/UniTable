@@ -14,6 +14,8 @@ public class GrupoRequest {
     private String tema;
     private String descripcion;
     @NotNull
+    private Long usuario_id;
+    @NotNull
     private Long curso_id;
     @NotNull
     private Long chat_id;

@@ -29,6 +29,8 @@ public class GrupoService {
     @Autowired
     private GrupoRepository grupoRepository;
     @Autowired
+    private UsuarioService usuarioService;
+    @Autowired
     private CursoService cursoService;
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -67,6 +69,7 @@ public class GrupoService {
 
     private Grupo initGrupo(GrupoRequest grupoRequest) {
         GrupoValidator.validateGrupo(grupoRequest);
+        Usuario usuario = usuarioService.findUsuarioById(grupoRequest.getUsuario_id());
         Curso curso = cursoService.findCursoById(grupoRequest.getCurso_id());
         Chat chat = chatService.findChatById(grupoRequest.getChat_id());
 
@@ -79,6 +82,7 @@ public class GrupoService {
         grupo.setCurso(curso);
         grupo.setChat(chat);
         grupo.setUsuarios(new ArrayList<Usuario>());
+        grupo.getUsuarios().add(usuario);
 
         return grupo;
     }
