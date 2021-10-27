@@ -49,10 +49,13 @@ public class MensajeService {
         mensaje.setMensaje(mensajeRequest.getMensaje());
         mensaje.setHora_mensaje(Time.valueOf(LocalTime.now()));
         
-        usuario.getMensajes().add(mensaje);
-        chat.getMensajes().add(mensaje);
         mensaje.setChat(chat);
         mensaje.setUsuario(usuario);
+        
+        usuario.getMensajes().add(mensaje);
+        chat.getMensajes().add(mensaje);
+        chat.setCant_mensajes(chat.getCant_mensajes()+1);
+        
 
         return mensaje;
     }

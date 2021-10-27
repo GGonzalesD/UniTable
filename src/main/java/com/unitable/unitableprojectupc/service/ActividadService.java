@@ -2,7 +2,6 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.ActividadValidator;
 import com.unitable.unitableprojectupc.dto.ActividadRequest;
-import com.unitable.unitableprojectupc.dto.RecompensaRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
@@ -11,8 +10,6 @@ import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
-import net.bytebuddy.implementation.bytecode.Throw;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -50,7 +47,7 @@ public class ActividadService {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(id));
         ActividadValidator.validateActividad(actividadRequest);
         Actividad actividad = new Actividad();
-        actividad.setUsuario(usuario.orElseThrow(()->new UserNotFoundException("id no encontrado")));
+        actividad.setUsuario(usuario.orElseThrow(()->new UserNotFoundException("Actividad con id '"+id+"' no encontrado")));
         actividad.setNombre(actividadRequest.getNombre());
         actividad.setDetalles(actividadRequest.getDetalles());
         actividad.setFecha_ini(actividadRequest.getFecha_ini());

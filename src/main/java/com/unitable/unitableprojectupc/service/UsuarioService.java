@@ -68,7 +68,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario findUsuarioById(Long id) {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(id));
-        return usuario.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+        return usuario.orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
     }
 
     @Transactional(readOnly = true)
@@ -87,7 +87,7 @@ public class UsuarioService {
     public Usuario updateUsuarioById(Long id, UsuarioRequest usuarioRequest) {
         UsuarioValidator.validateUser(usuarioRequest);
         Usuario usuario = usuarioRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+                orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
         usuario.setNombres(usuarioRequest.getNombres());
         usuario.setApellidos(usuarioRequest.getApellidos());
         usuario.setCorreo(usuarioRequest.getCorreo());
@@ -99,7 +99,7 @@ public class UsuarioService {
     @Transactional
     public Usuario deleteUsuarioById(Long usuarioId){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new UserNotFoundException("id no encontrado"));
+                .orElseThrow(()-> new UserNotFoundException("User '"+usuarioId+"' Not found"));
         usuarioRepository.delete(usuario);
         return usuario;
     }
@@ -107,13 +107,13 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<Recompensa> findRecompensasByUserId(Long id) {
         Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(id));
-        return recompensas.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+        return recompensas.orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
     }
 
     @Transactional(readOnly = true)
     public List<Actividad> findActividadesByUserId(Long id) {
         Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(id));
-        return actividades.orElseThrow(() -> new UserNotFoundException("id no encontrado"));
+        return actividades.orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
     }
 
 

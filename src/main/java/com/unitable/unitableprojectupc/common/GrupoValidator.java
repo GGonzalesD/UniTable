@@ -5,7 +5,7 @@ import com.unitable.unitableprojectupc.exception.GrupoBadRequestException;
 
 public class GrupoValidator {
 	public static boolean validateGrupo(GrupoRequest grupoRequest){
-		if(grupoRequest.getCurso_id() == null || grupoRequest.getChat_id() == null){
+		if(grupoRequest.getCurso_id() == null){
 			throw new GrupoBadRequestException("Es necesario pasar el ID del curso y del chat al grupo");
 		}
 		

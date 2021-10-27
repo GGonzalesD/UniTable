@@ -7,7 +7,9 @@ import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.exception.ChatNotFoundException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
+import com.unitable.unitableprojectupc.repository.ChatRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
 
@@ -35,7 +37,7 @@ public class GrupoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     @Autowired
-    private ChatService chatService;
+    private ChatRepository chatRepository;
 
     @Transactional(readOnly = true)
     public List<Grupo> findAllGroups() {
@@ -71,7 +73,20 @@ public class GrupoService {
         GrupoValidator.validateGrupo(grupoRequest);
         Usuario usuario = usuarioService.findUsuarioById(grupoRequest.getUsuario_id());
         Curso curso = cursoService.findCursoById(grupoRequest.getCurso_id());
-        Chat chat = chatService.findChatById(grupoRequest.getChat_id());
+
+        Chat chat;
+        if(grupoRequest.getChat_id() == null){
+            chat = Chat.builder()
+                .cant_mensajes(0)
+                .detalles("Chat del grupo '" + grupoRequest.getNombre() + "'")
+                .build();
+            chat = chatRepository.save(chat);
+        }
+        else{
+            Long chatId = grupoRequest.getChat_id();
+            chat = chatRepository.findById(chatId)
+			.orElseThrow( () -> new ChatNotFoundException("Chat con ID '"+chatId+"' no encontrado"));
+        }
 
         Grupo grupo = new Grupo();
         grupo.setNombre(grupoRequest.getNombre());
