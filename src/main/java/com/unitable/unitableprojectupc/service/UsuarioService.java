@@ -4,6 +4,7 @@ import com.unitable.unitableprojectupc.common.UsuarioValidator;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.entities.*;
 import com.unitable.unitableprojectupc.exception.GrupoNotFoundException;
+import com.unitable.unitableprojectupc.exception.IncorrectUsuarioRequestException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
@@ -81,6 +82,30 @@ public class UsuarioService {
     public Usuario finUsuarioByCorreoAndPassword(String correo, String password) {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioByCorreoAndPassword(correo, password));
         return usuario.orElseThrow(() -> new UserNotFoundException("No se encontro al usuario"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> getContactos(Long usuarioId){
+        Usuario usuario = usuarioRepository.findById(usuarioId).
+            orElseThrow(() -> new UserNotFoundException("User '"+usuarioId+"' Not found"));
+        
+        return usuario.getContactos();
+    }
+
+    @Transactional
+    public List<Usuario> followToUser(Long usuarioId, Long followedId) {
+        UsuarioValidator.validateFollow(usuarioId, followedId);
+        Usuario usuario = usuarioRepository.findById(usuarioId).
+            orElseThrow(() -> new UserNotFoundException("User '"+usuarioId+"' Not found"));
+        Usuario followed = usuarioRepository.findById(followedId).
+            orElseThrow(() -> new UserNotFoundException("User '"+followedId+"' Not found"));
+
+        if(usuario.getContactos().contains(followed))
+            throw new IncorrectUsuarioRequestException("'"+usuarioId+" sigue a '"+followedId+"'");
+
+        usuario.getContactos().add(followed);
+        usuarioRepository.save(usuario);
+        return usuario.getContactos();
     }
 
     @Transactional

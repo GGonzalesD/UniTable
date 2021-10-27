@@ -37,6 +37,20 @@ public class UsuarioController {
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario), HttpStatus.CREATED);
     }
 
+    @GetMapping("/follows/{id}")
+    public ResponseEntity<List<UsuarioResponse>> getContactos(@PathVariable Long id) {
+        List<Usuario> usuarios = usuarioService.getContactos(id);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuarios),
+                HttpStatus.OK);
+    }
+
+    @PutMapping("/follow")
+    public ResponseEntity<List<UsuarioResponse>> followToUsuario(@RequestParam Long usId, @RequestParam Long fwId) {
+        List<Usuario> usuarios = usuarioService.followToUser(usId, fwId);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuarios),
+                HttpStatus.OK);
+    }
+
     @PutMapping("/join")
     public ResponseEntity<List<GrupoResponse>> joinToOneGroup(@RequestParam Long userId, @RequestParam Long groupId) {
         List<Grupo> grupos = usuarioService.joinToAGroup(userId, groupId);

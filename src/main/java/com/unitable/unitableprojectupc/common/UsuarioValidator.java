@@ -11,4 +11,11 @@ public class UsuarioValidator {
         }
         return true;
     }
+
+    public static boolean validateFollow(Long usuarioId, Long followedId){
+        if(usuarioId == followedId){
+            throw new IncorrectUsuarioRequestException("No te puedes seguir a ti mismo");
+        }
+        return true;
+    }
 }
