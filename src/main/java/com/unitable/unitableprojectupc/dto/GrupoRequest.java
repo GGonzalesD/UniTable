@@ -17,6 +17,4 @@ public class GrupoRequest {
     private Long usuario_id;
     @NotNull
     private Long curso_id;
-    private Long chat_id;
-
 }
