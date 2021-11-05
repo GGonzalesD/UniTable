@@ -38,6 +38,12 @@ public class MensajeService {
         return mensajes;
     }
 
+    @Transactional
+    public void deleteMensage(Mensaje mensaje){
+        mensaje.getUsuario().getMensajes().remove(mensaje);
+        mensajeRepository.delete(mensaje);
+    }
+
     private Mensaje initMensaje(MensajeRequest mensajeRequest) {
         Mensaje mensaje = new Mensaje();
 

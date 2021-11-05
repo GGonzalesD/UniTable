@@ -3,8 +3,7 @@ package com.unitable.unitableprojectupc.service;
 import com.unitable.unitableprojectupc.common.UsuarioValidator;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.entities.*;
-import com.unitable.unitableprojectupc.exception.GrupoNotFoundException;
-import com.unitable.unitableprojectupc.exception.UserNotFoundException;
+import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
@@ -46,10 +45,10 @@ public class UsuarioService {
         
         
         Usuario usuario = usuarioRepository.findById(userId)
-			.orElseThrow( () -> UserNotFoundException.byIndex(userId) );
+			.orElseThrow( () -> ResourceNotFoundException.byIndex("Usuario", userId));
 
         Grupo grupo = grupoRepository.findById(groupId)
-            .orElseThrow( () -> GrupoNotFoundException.byIndex(groupId) );
+            .orElseThrow( () -> ResourceNotFoundException.byIndex("Grupo", groupId));
 
         if(usuario.getGrupos().contains(grupo) == false) {
             usuario.getGrupos().add(grupo);
@@ -69,25 +68,25 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario findUsuarioById(Long userId) {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(userId));
-        return usuario.orElseThrow(() -> UserNotFoundException.byIndex(userId) );
+        return usuario.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
     }
 
     @Transactional(readOnly = true)
     public List<Usuario> finUsuarioByNombresAndApellidos(String nombres, String apellidos) {
         Optional<List<Usuario>> usuarios = Optional.ofNullable(usuarioRepository.finUsuarioByNombresAndApellidos(nombres, apellidos));
-        return usuarios.orElseThrow(() -> new UserNotFoundException("No se encontro al usuario"));
+        return usuarios.orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con nombre "+ nombres));
     }
 
     @Transactional(readOnly = true)
     public Usuario finUsuarioByCorreoAndPassword(String correo, String password) {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioByCorreoAndPassword(correo, password));
-        return usuario.orElseThrow(() -> new UserNotFoundException("No se encontro al usuario"));
+        return usuario.orElseThrow(() -> new ResourceNotFoundException("El correro la contraseña estan mal"));
     }
 
     @Transactional(readOnly = true)
     public List<Usuario> getContactos(Long userId){
         Usuario usuario = usuarioRepository.findById(userId).
-            orElseThrow(() -> UserNotFoundException.byIndex(userId) );
+            orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
         
         return usuario.getContactos();
     }
@@ -96,9 +95,9 @@ public class UsuarioService {
     public Boolean followToUser(Long userId, Long followedId) {
         UsuarioValidator.validateFollow(userId, followedId);
         Usuario usuario = usuarioRepository.findById(userId).
-            orElseThrow(() -> UserNotFoundException.byIndex(userId) );
+            orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
         Usuario followed = usuarioRepository.findById(followedId).
-            orElseThrow(() -> UserNotFoundException.byIndex(followedId) );
+            orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", followedId) );
 
         if(usuario.getContactos().contains(followed))
             usuario.getContactos().remove(followed);
@@ -114,7 +113,7 @@ public class UsuarioService {
     public Usuario updateUsuarioById(Long userId, UsuarioRequest usuarioRequest) {
         UsuarioValidator.validateUser(usuarioRequest);
         Usuario usuario = usuarioRepository.findById(userId).
-                orElseThrow(() -> UserNotFoundException.byIndex(userId) );
+                orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
         usuario.setNombres(usuarioRequest.getNombres());
         usuario.setApellidos(usuarioRequest.getApellidos());
         usuario.setCorreo(usuarioRequest.getCorreo());
@@ -126,7 +125,13 @@ public class UsuarioService {
     @Transactional
     public Usuario deleteUsuarioById(Long userId){
         Usuario usuario = usuarioRepository.findById(userId)
-                .orElseThrow(()-> UserNotFoundException.byIndex(userId) );
+                .orElseThrow(()-> ResourceNotFoundException.byIndex("Usuario", userId) );
+        
+        usuario.getGrupos().forEach((Grupo grupo)->{
+            grupo.getUsuarios().remove(usuario);
+            usuario.getGrupos().remove(grupo);
+        });
+
         usuarioRepository.delete(usuario);
         return usuario;
     }
@@ -134,13 +139,13 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<Recompensa> findRecompensasByUserId(Long userId) {
         Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(userId));
-        return recompensas.orElseThrow(() -> UserNotFoundException.byIndex(userId) );
+        return recompensas.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
     }
 
     @Transactional(readOnly = true)
     public List<Actividad> findActividadesByUserId(Long userId) {
         Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(userId));
-        return actividades.orElseThrow(() -> UserNotFoundException.byIndex(userId) );
+        return actividades.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
     }
 
 

@@ -2,7 +2,7 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.dto.CursoRequest;
 import com.unitable.unitableprojectupc.entities.Curso;
-import com.unitable.unitableprojectupc.exception.CursoNotFoundException;
+import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,9 +31,9 @@ public class CursoService {
     }
 
     @Transactional(readOnly = true)
-    public Curso findCursoById(Long id) {
-        Curso curso = cursoRepository.findById(id)
-			.orElseThrow( () -> new CursoNotFoundException("Curso con ID '"+id+"' no encontrado"));
+    public Curso findCursoById(Long cursoId) {
+        Curso curso = cursoRepository.findById(cursoId)
+			.orElseThrow( () -> ResourceNotFoundException.byIndex("Curso", cursoId));
         return curso;
     }
 

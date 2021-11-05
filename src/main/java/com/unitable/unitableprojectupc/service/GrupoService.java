@@ -9,7 +9,7 @@ import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.Usuario;
-import com.unitable.unitableprojectupc.exception.UserNotFoundException;
+import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ChatRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
@@ -42,6 +42,8 @@ public class GrupoService {
     @Autowired
     private ChatRepository chatRepository;
     @Autowired
+    private ChatService chatService;
+    @Autowired
     private EntityDtoConverter entityDtoConverter;
 
     @Transactional(readOnly = true)
@@ -67,7 +69,7 @@ public class GrupoService {
     public List<Grupo> findgrupoByUsuarioAndCurso(Long userId, Long cursoId) {
         
         usuarioRepository.findById(userId)
-			.orElseThrow( () -> new UserNotFoundException("User '"+userId+"' Not found"));
+			.orElseThrow( () -> ResourceNotFoundException.byIndex("Usuario", userId) );
         cursoService.findCursoById(cursoId);
 
         List<Grupo> grupos = grupoRepository.findByUsuarioAndCurso(userId, cursoId);
@@ -79,6 +81,36 @@ public class GrupoService {
     public Grupo createGrupo(GrupoRequest grupoRequest) {
         Grupo newGrupo = initGrupo(grupoRequest);
         return grupoRepository.save(newGrupo);
+    }
+
+    @Transactional
+    public Grupo updateGrupoById(Long grupoId, GrupoRequest grupoRequest) {
+        GrupoValidator.validateGrupo(grupoRequest);
+        Grupo grupo = grupoRepository.findById(grupoId).
+                orElseThrow(() -> ResourceNotFoundException.byIndex("Grupo", grupoId) );
+        
+        Curso curso = cursoService.findCursoById(grupoRequest.getCurso_id());
+
+        grupo.setNombre(grupoRequest.getNombre());
+        grupo.setTema(grupoRequest.getTema());
+        grupo.setDescripcion(grupoRequest.getDescripcion());
+        grupo.setCurso(curso);
+
+        return grupoRepository.save(grupo);
+    }
+
+    @Transactional
+    public void deleteGrupo(Long grupoId){
+        Grupo grupo = grupoRepository.findById(grupoId)
+                .orElseThrow(()-> ResourceNotFoundException.byIndex("Grupo", grupoId) );
+        
+        for (Usuario usuario : grupo.getUsuarios().toArray(new Usuario[0])) {
+            grupo.getUsuarios().remove(usuario);
+            usuario.getGrupos().remove(grupo);
+        }
+        
+        chatService.deleteChat(grupo.getChat());
+        grupoRepository.delete(grupo);
     }
 
     private Grupo initGrupo(GrupoRequest grupoRequest) {
@@ -103,7 +135,7 @@ public class GrupoService {
         grupo.setCurso(curso);
         grupo.setChat(chat);
         grupo.setUsuarios(new ArrayList<Usuario>());
-        grupo.getUsuarios().add(usuario);
+        usuario.getGrupos().add(grupo);
 
         return grupo;
     }

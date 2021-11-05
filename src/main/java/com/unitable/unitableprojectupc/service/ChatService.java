@@ -3,7 +3,7 @@ package com.unitable.unitableprojectupc.service;
 import com.unitable.unitableprojectupc.dto.ChatRequest;
 import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Mensaje;
-import com.unitable.unitableprojectupc.exception.ChatNotFoundException;
+import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ChatRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ import java.util.List;
 public class ChatService {
 	@Autowired
     private ChatRepository chatRepository;
+    @Autowired
+    private MensajeService mensajeService;
 
 	@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Chat createChat(ChatRequest chatRequest) {
@@ -33,10 +35,21 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public Chat findChatById(Long id) {
-        Chat chat = chatRepository.findById(id)
-			.orElseThrow( () -> new ChatNotFoundException("Chat con ID '"+id+"' no encontrado"));
+    public Chat findChatById(Long chatId) {
+        Chat chat = chatRepository.findById(chatId)
+			.orElseThrow( () -> ResourceNotFoundException.byIndex("Chat", chatId));
         return chat;
+    }
+
+    @Transactional
+    public void deleteChat(Chat chat){
+
+        for (Mensaje mensaje : chat.getMensajes().toArray(new Mensaje[0])) {
+            chat.getMensajes().remove(mensaje);
+            mensajeService.deleteMensage(mensaje);
+        }
+
+        chatRepository.delete(chat);
     }
 
 	private Chat initChat(ChatRequest chatRequest) {

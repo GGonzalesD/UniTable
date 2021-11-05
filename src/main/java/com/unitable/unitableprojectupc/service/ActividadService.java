@@ -5,8 +5,7 @@ import com.unitable.unitableprojectupc.dto.ActividadRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
-import com.unitable.unitableprojectupc.exception.ActividadNotFoundException;
-import com.unitable.unitableprojectupc.exception.UserNotFoundException;
+import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
@@ -43,11 +42,11 @@ public class ActividadService {
         return actividades;
     }
 
-    private Actividad initActividad(Long id, ActividadRequest actividadRequest) {
-        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(id));
+    private Actividad initActividad(Long actividadId, ActividadRequest actividadRequest) {
+        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(actividadId));
         ActividadValidator.validateActividad(actividadRequest);
         Actividad actividad = new Actividad();
-        actividad.setUsuario(usuario.orElseThrow(()->new UserNotFoundException("Actividad con id '"+id+"' no encontrado")));
+        actividad.setUsuario(usuario.orElseThrow(()->ResourceNotFoundException.byIndex("Actividad", actividadId)));
         actividad.setNombre(actividadRequest.getNombre());
         actividad.setDetalles(actividadRequest.getDetalles());
         actividad.setFecha_ini(actividadRequest.getFecha_ini());
@@ -60,7 +59,7 @@ public class ActividadService {
     @Transactional
     public void deleteActividadById(Long actividadId){
         Actividad actividad = actividadRepository.findById(actividadId)
-                .orElseThrow(()-> new ActividadNotFoundException("id no encontrado"));
+                .orElseThrow(()-> ResourceNotFoundException.byIndex("Actividad", actividadId));
         actividadRepository.delete(actividad);
     }
 
@@ -80,9 +79,9 @@ public class ActividadService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public Actividad finishActividad(Long id){
-        Actividad actividadFromDb = actividadRepository.findById(id)
-                .orElseThrow(()-> new ActividadNotFoundException("id no encontrado"));
+    public Actividad finishActividad(Long actividadId){
+        Actividad actividadFromDb = actividadRepository.findById(actividadId)
+                .orElseThrow(()-> ResourceNotFoundException.byIndex("Actividad", actividadId));
 
         actividadFromDb.setActiva(Boolean.FALSE);
 

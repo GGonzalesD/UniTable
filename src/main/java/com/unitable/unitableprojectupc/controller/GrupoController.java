@@ -56,6 +56,19 @@ public class GrupoController {
                 HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGrupoById(@PathVariable Long id) throws Exception{
+        grupoService.deleteGrupo(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GrupoResponse> updateUsuariobyId(@PathVariable Long id, @RequestBody GrupoRequest grupoRequest) throws Exception{
+        Grupo grupo = grupoService.updateGrupoById(id, grupoRequest);
+        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupo),
+                HttpStatus.OK);
+    }
+
     @GetMapping("/page")
     public ResponseEntity<Page<GrupoResponse>> findAllPage(Pageable pageable) throws Exception{
         return new ResponseEntity<Page<GrupoResponse>>(grupoService.findAllGroupsPage(pageable), HttpStatus.OK);
