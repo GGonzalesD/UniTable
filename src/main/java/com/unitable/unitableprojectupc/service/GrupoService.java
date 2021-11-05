@@ -1,8 +1,10 @@
 package com.unitable.unitableprojectupc.service;
 
 
+import com.unitable.unitableprojectupc.common.EntityDtoConverter;
 import com.unitable.unitableprojectupc.common.GrupoValidator;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
+import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
@@ -14,6 +16,10 @@ import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,6 +44,16 @@ public class GrupoService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private ChatRepository chatRepository;
+    @Autowired
+    private EntityDtoConverter entityDtoConverter;
+
+    @Transactional(readOnly = true)
+    public Page<GrupoResponse> findAllGroupsPage(@PageableDefault(sort = "nombre", size=3, direction = Sort.Direction.ASC)
+        Pageable pageable) {
+            Page<GrupoResponse> grupos = grupoRepository.findAll(pageable).map(
+                grupo->entityDtoConverter.convertEntityToDtoGrupo(grupo));
+        return grupos;
+    }
 
     @Transactional(readOnly = true)
     public List<Grupo> findAllGroups() {

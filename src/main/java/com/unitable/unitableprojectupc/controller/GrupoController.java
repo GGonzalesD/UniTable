@@ -7,6 +7,10 @@ import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.service.GrupoService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +58,10 @@ public class GrupoController {
                 HttpStatus.OK);
     }
 
-
+    @GetMapping("/page")
+    public Page<GrupoResponse> findAllPage(@PageableDefault(sort="nombre", size=3, direction = Sort.Direction.ASC)Pageable pageable) {
+        return grupoService.findAllGroupsPage(pageable);
+    }
 
 
 }

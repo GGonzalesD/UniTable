@@ -45,11 +45,12 @@ public class UsuarioService {
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public List<Grupo> joinToAGroup(Long userId, Long groupId) {
         
+        
         Usuario usuario = usuarioRepository.findById(userId)
-			.orElseThrow( () -> new UserNotFoundException("User '"+userId+"' Not found"));
+			.orElseThrow( () -> UserNotFoundException.byIndex(userId) );
 
         Grupo grupo = grupoRepository.findById(groupId)
-            .orElseThrow( () -> new GrupoNotFoundException("Grupo '"+groupId+"' Not found") );
+            .orElseThrow( () -> GrupoNotFoundException.byIndex(groupId) );
 
         if(usuario.getGrupos().contains(grupo) == false) {
             usuario.getGrupos().add(grupo);
@@ -67,9 +68,9 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Usuario findUsuarioById(Long id) {
-        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(id));
-        return usuario.orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
+    public Usuario findUsuarioById(Long userId) {
+        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(userId));
+        return usuario.orElseThrow(() -> UserNotFoundException.byIndex(userId) );
     }
 
     @Transactional(readOnly = true)
@@ -85,23 +86,23 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<Usuario> getContactos(Long usuarioId){
-        Usuario usuario = usuarioRepository.findById(usuarioId).
-            orElseThrow(() -> new UserNotFoundException("User '"+usuarioId+"' Not found"));
+    public List<Usuario> getContactos(Long userId){
+        Usuario usuario = usuarioRepository.findById(userId).
+            orElseThrow(() -> UserNotFoundException.byIndex(userId) );
         
         return usuario.getContactos();
     }
 
     @Transactional
-    public List<Usuario> followToUser(Long usuarioId, Long followedId) {
-        UsuarioValidator.validateFollow(usuarioId, followedId);
-        Usuario usuario = usuarioRepository.findById(usuarioId).
-            orElseThrow(() -> new UserNotFoundException("User '"+usuarioId+"' Not found"));
+    public List<Usuario> followToUser(Long userId, Long followedId) {
+        UsuarioValidator.validateFollow(userId, followedId);
+        Usuario usuario = usuarioRepository.findById(userId).
+            orElseThrow(() -> UserNotFoundException.byIndex(userId) );
         Usuario followed = usuarioRepository.findById(followedId).
-            orElseThrow(() -> new UserNotFoundException("User '"+followedId+"' Not found"));
+            orElseThrow(() -> UserNotFoundException.byIndex(followedId) );
 
         if(usuario.getContactos().contains(followed))
-            throw new IncorrectUsuarioRequestException("'"+usuarioId+" sigue a '"+followedId+"'");
+            throw new IncorrectUsuarioRequestException("'"+userId+" sigue a '"+followedId+"'");
 
         usuario.getContactos().add(followed);
         usuarioRepository.save(usuario);
@@ -109,10 +110,10 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario updateUsuarioById(Long id, UsuarioRequest usuarioRequest) {
+    public Usuario updateUsuarioById(Long userId, UsuarioRequest usuarioRequest) {
         UsuarioValidator.validateUser(usuarioRequest);
-        Usuario usuario = usuarioRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
+        Usuario usuario = usuarioRepository.findById(userId).
+                orElseThrow(() -> UserNotFoundException.byIndex(userId) );
         usuario.setNombres(usuarioRequest.getNombres());
         usuario.setApellidos(usuarioRequest.getApellidos());
         usuario.setCorreo(usuarioRequest.getCorreo());
@@ -122,23 +123,23 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario deleteUsuarioById(Long usuarioId){
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new UserNotFoundException("User '"+usuarioId+"' Not found"));
+    public Usuario deleteUsuarioById(Long userId){
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(()-> UserNotFoundException.byIndex(userId) );
         usuarioRepository.delete(usuario);
         return usuario;
     }
 
     @Transactional(readOnly = true)
-    public List<Recompensa> findRecompensasByUserId(Long id) {
-        Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(id));
-        return recompensas.orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
+    public List<Recompensa> findRecompensasByUserId(Long userId) {
+        Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(userId));
+        return recompensas.orElseThrow(() -> UserNotFoundException.byIndex(userId) );
     }
 
     @Transactional(readOnly = true)
-    public List<Actividad> findActividadesByUserId(Long id) {
-        Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(id));
-        return actividades.orElseThrow(() -> new UserNotFoundException("User '"+id+"' Not found"));
+    public List<Actividad> findActividadesByUserId(Long userId) {
+        Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(userId));
+        return actividades.orElseThrow(() -> UserNotFoundException.byIndex(userId) );
     }
 
 

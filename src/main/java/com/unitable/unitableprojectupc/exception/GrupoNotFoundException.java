@@ -8,5 +8,9 @@ public class GrupoNotFoundException extends RuntimeException{
 	public GrupoNotFoundException(String message){
 		super(message);
 	}
+
+	public static GrupoNotFoundException byIndex(Long groupId){
+        return new GrupoNotFoundException("Group '" + groupId + "' Not found");
+    }
 }
 
