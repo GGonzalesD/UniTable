@@ -25,13 +25,13 @@ public class CursoController {
     private EntityDtoConverter entityDtoConverter;
 
     @PostMapping
-    public ResponseEntity<CursoResponse> createCurso(@RequestBody CursoRequest cursoRequest) {
+    public ResponseEntity<CursoResponse> createCurso(@RequestBody CursoRequest cursoRequest) throws Exception{
         Curso curso = cursoService.createCurso(cursoRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoCurso(curso), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<CursoResponse>> findAll() {
+    public ResponseEntity<List<CursoResponse>> findAll() throws Exception{
         List<Curso> cursos = cursoService.findAllCursos();
         return new ResponseEntity<List<CursoResponse>>(
                 entityDtoConverter.convertEntityToDtoCurso(cursos),

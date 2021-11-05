@@ -26,13 +26,13 @@ public class ActividadController {
     private EntityDtoConverter entityDtoConverter;
 
     @PostMapping("/{id}")
-    public ResponseEntity<ActividadResponse> createActividad(@PathVariable Long id, @RequestBody ActividadRequest actividadRequest) {
+    public ResponseEntity<ActividadResponse> createActividad(@PathVariable Long id, @RequestBody ActividadRequest actividadRequest) throws Exception{
         Actividad actividad = actividadService.createActividad(id, actividadRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ActividadResponse>> findAll() {
+    public ResponseEntity<List<ActividadResponse>> findAll() throws Exception{
         List<Actividad> actividades = actividadService.findAllActividades();
         return new ResponseEntity<List<ActividadResponse>>(
                 entityDtoConverter.convertEntityToDtoActividad(actividades),
@@ -40,18 +40,19 @@ public class ActividadController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteActividadById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteActividadById(@PathVariable Long id) throws Exception{
         actividadService.deleteActividadById(id);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ActividadResponse> updateActividad(@PathVariable Long id,@RequestBody @Validated ActividadRequest actividadRequest){
+    public ResponseEntity<ActividadResponse> updateActividad(@PathVariable Long id,@RequestBody @Validated ActividadRequest actividadRequest) throws Exception{
         Actividad actividad = actividadService.updateActividad(id, actividadRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
     }
 
     @PutMapping("/finish/{id}")
-    public ResponseEntity<ActividadResponse> finishActividad(@PathVariable Long id){
+    public ResponseEntity<ActividadResponse> finishActividad(@PathVariable Long id) throws Exception{
         Actividad actividad = actividadService.finishActividad(id);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
     }

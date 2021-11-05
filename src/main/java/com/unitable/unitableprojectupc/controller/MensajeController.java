@@ -25,13 +25,13 @@ public class MensajeController {
     private EntityDtoConverter entityDtoConverter;
 
     @PostMapping
-    public ResponseEntity<MensajeResponse> createMensaje(@RequestBody MensajeRequest mensajeRequest) {
+    public ResponseEntity<MensajeResponse> createMensaje(@RequestBody MensajeRequest mensajeRequest) throws Exception{
         Mensaje mensaje = mensajeService.createMensaje(mensajeRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoMensaje(mensaje), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<MensajeResponse>> findAll() {
+    public ResponseEntity<List<MensajeResponse>> findAll() throws Exception{
         List<Mensaje> mensajes = mensajeService.findAllMensajes();
         return new ResponseEntity<List<MensajeResponse>>(
                 entityDtoConverter.convertEntityToDtoMensaje(mensajes),

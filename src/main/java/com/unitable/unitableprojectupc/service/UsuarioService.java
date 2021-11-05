@@ -4,7 +4,6 @@ import com.unitable.unitableprojectupc.common.UsuarioValidator;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.entities.*;
 import com.unitable.unitableprojectupc.exception.GrupoNotFoundException;
-import com.unitable.unitableprojectupc.exception.IncorrectUsuarioRequestException;
 import com.unitable.unitableprojectupc.exception.UserNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
@@ -94,7 +93,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public List<Usuario> followToUser(Long userId, Long followedId) {
+    public Boolean followToUser(Long userId, Long followedId) {
         UsuarioValidator.validateFollow(userId, followedId);
         Usuario usuario = usuarioRepository.findById(userId).
             orElseThrow(() -> UserNotFoundException.byIndex(userId) );
@@ -102,11 +101,13 @@ public class UsuarioService {
             orElseThrow(() -> UserNotFoundException.byIndex(followedId) );
 
         if(usuario.getContactos().contains(followed))
-            throw new IncorrectUsuarioRequestException("'"+userId+" sigue a '"+followedId+"'");
-
-        usuario.getContactos().add(followed);
+            usuario.getContactos().remove(followed);
+        else
+            usuario.getContactos().add(followed);
+        
         usuarioRepository.save(usuario);
-        return usuario.getContactos();
+        return usuario.getContactos().contains(followed);
+
     }
 
     @Transactional

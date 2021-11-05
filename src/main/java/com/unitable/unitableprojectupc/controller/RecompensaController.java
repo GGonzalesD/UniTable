@@ -25,13 +25,13 @@ public class RecompensaController {
     private EntityDtoConverter entityDtoConverter;
 
     @PostMapping
-    public ResponseEntity<RecompensaResponse> createRecompensa(@RequestBody RecompensaRequest recompensaRequest) {
+    public ResponseEntity<RecompensaResponse> createRecompensa(@RequestBody RecompensaRequest recompensaRequest) throws Exception{
         Recompensa recompensa = recompensaService.createRecompensa(recompensaRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoRecompensa(recompensa), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<RecompensaResponse>> findAll() {
+    public ResponseEntity<List<RecompensaResponse>> findAll() throws Exception{
         List<Recompensa> recompensas = recompensaService.findAllRecompensas();
         return new ResponseEntity<List<RecompensaResponse>>(
                 entityDtoConverter.convertEntityToDtoRecompensa(recompensas),

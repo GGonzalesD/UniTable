@@ -30,20 +30,20 @@ public class ChatController {
     private EntityDtoConverter entityDtoConverter;
 
 	@PostMapping
-    public ResponseEntity<ChatResponse> createChat(@RequestBody ChatRequest chatRequest) {
+    public ResponseEntity<ChatResponse> createChat(@RequestBody ChatRequest chatRequest) throws Exception{
         Chat chat = chatService.createChat(chatRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoChat(chat), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ChatResponse> findUsuarioById(@PathVariable Long id) {
+    public ResponseEntity<ChatResponse> findUsuarioById(@PathVariable Long id) throws Exception{
         Chat chat = chatService.findChatById(id);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoChat(chat),
                 HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> findAll() {
+    public ResponseEntity<List<ChatResponse>> findAll() throws Exception{
         List<Chat> chats = chatService.findAllChats();
         return new ResponseEntity<List<ChatResponse>>(
                 entityDtoConverter.convertEntityToDtoChat(chats),
