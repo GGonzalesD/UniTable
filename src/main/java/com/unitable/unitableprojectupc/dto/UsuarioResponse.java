@@ -1,11 +1,14 @@
 package com.unitable.unitableprojectupc.dto;
 
 import com.unitable.unitableprojectupc.common.UserType;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class UsuarioResponse {
     private Long id;
     private String nombres;

@@ -2,6 +2,7 @@ package com.unitable.unitableprojectupc.entities;
 
 import com.unitable.unitableprojectupc.common.UserType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "usuarios")
 public class Usuario {
 
@@ -28,7 +30,7 @@ public class Usuario {
     @Column(name = "correo")
     private String correo;
 
-    @Column(name = "password")
+    @Column(name = "password",length = 150,nullable = false)
     private String password;
 
     @Column(name = "carrera")

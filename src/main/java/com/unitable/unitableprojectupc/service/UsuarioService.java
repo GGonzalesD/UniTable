@@ -1,25 +1,40 @@
 package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.UsuarioValidator;
+import com.unitable.unitableprojectupc.converters.UsuarioConverter;
+import com.unitable.unitableprojectupc.dto.LoginRequest;
+import com.unitable.unitableprojectupc.dto.LoginResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.entities.*;
+import com.unitable.unitableprojectupc.exception.BadResourceRequestException;
+import com.unitable.unitableprojectupc.exception.GeneralServiceException;
 import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Date;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UsuarioService {
+
+    @Value("${jwt.password}")
+    private String jwtSecret;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -33,11 +48,32 @@ public class UsuarioService {
     @Autowired
     private GrupoRepository grupoRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UsuarioConverter usuarioConverter;
+
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Usuario createUser(UsuarioRequest usuarioRequest) {
-        UsuarioValidator.validateUser(usuarioRequest);
-        Usuario newUser = initUsuario(usuarioRequest);
-        return usuarioRepository.save(newUser);
+        
+        try {
+            Usuario user = initUsuario(usuarioRequest);
+            UsuarioValidator.validateUser(usuarioRequest);
+            Usuario existUser=usuarioRepository.findByCorreo(user.getCorreo())
+                    .orElse(null);
+            if(existUser!=null)
+                throw new BadResourceRequestException("Ya se registro una cuenta con este correo.");
+
+            String encoder = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encoder);
+
+            return usuarioRepository.save(user);
+        } catch (BadResourceRequestException | ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GeneralServiceException(e.getMessage(), e);
+        }
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
@@ -148,6 +184,59 @@ public class UsuarioService {
         return actividades.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
     }
 
+    public LoginResponse login(LoginRequest request){
+        try {
+            Usuario user=usuarioRepository.findByCorreo(request.getCorreo())
+                    .orElseThrow(()->new BadResourceRequestException("Usuario o password incorrecto"));
+
+            if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+                throw new BadResourceRequestException("Usuario o password incorrecto");
+
+            String token = createToken(user);
+
+            return new LoginResponse(usuarioConverter.fromEntity(user),token);
+
+        } catch (BadResourceRequestException | ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GeneralServiceException(e.getMessage(), e);
+        }
+    }
+
+    public String createToken(Usuario user){
+        Date now =new Date();
+        Date expiryDate=new Date(now.getTime()+ (1000*60*60*24));
+
+        return Jwts.builder()
+                .setSubject(user.getCorreo())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            return true;
+        }catch (UnsupportedJwtException e) {
+            log.error("JWT in a particular format/configuration that does not match the format expected");
+        }catch (MalformedJwtException e) {
+            log.error(" JWT was not correctly constructed and should be rejected");
+        }catch (SignatureException e) {
+            log.error("Signature or verifying an existing signature of a JWT failed");
+        }catch (ExpiredJwtException e) {
+            log.error("JWT was accepted after it expired and must be rejected");
+        }
+        return false;
+    }
+
+    public String getUsernameFromToken(String jwt) {
+        try {
+            return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().getSubject();
+        } catch (Exception e) {
+            throw new BadResourceRequestException("Invalid Token");
+        }
+    }
 
 
     private Usuario initUsuario(UsuarioRequest usuarioRequest) {
