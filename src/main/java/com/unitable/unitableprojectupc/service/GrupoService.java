@@ -3,6 +3,7 @@ package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
 import com.unitable.unitableprojectupc.common.GrupoValidator;
+import com.unitable.unitableprojectupc.dto.CursoRequest;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.entities.Chat;
@@ -13,6 +14,7 @@ import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ChatRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+import com.unitable.unitableprojectupc.security.UserPrincipal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,8 +35,6 @@ import java.util.Optional;
 public class GrupoService {
     @Autowired
     private GrupoRepository grupoRepository;
-    @Autowired
-    private UsuarioService usuarioService;
     @Autowired
     private CursoService cursoService;
     @Autowired
@@ -89,7 +89,13 @@ public class GrupoService {
         Grupo grupo = grupoRepository.findById(grupoId).
                 orElseThrow(() -> ResourceNotFoundException.byIndex("Grupo", grupoId) );
         
-        Curso curso = cursoService.findCursoById(grupoRequest.getCurso_id());
+        Curso curso = cursoService.findCursoByNombre(grupoRequest.getCurso_n());
+        if(curso==null){
+            curso = cursoService.createCurso(CursoRequest.builder()
+                .nombre(grupoRequest.getCurso_n())
+                .descripcion(grupoRequest.getCurso_d()
+                ).build());
+        }
 
         grupo.setNombre(grupoRequest.getNombre());
         grupo.setTema(grupoRequest.getTema());
@@ -115,8 +121,16 @@ public class GrupoService {
 
     private Grupo initGrupo(GrupoRequest grupoRequest) {
         GrupoValidator.validateGrupo(grupoRequest);
-        Usuario usuario = usuarioService.findUsuarioById(grupoRequest.getUsuario_id());
-        Curso curso = cursoService.findCursoById(grupoRequest.getCurso_id());
+
+        Usuario usuario = UserPrincipal.getCurrentUser();
+        
+        Curso curso = cursoService.findCursoByNombre(grupoRequest.getCurso_n());
+        if(curso==null){
+            curso = cursoService.createCurso(CursoRequest.builder()
+                .nombre(grupoRequest.getCurso_n())
+                .descripcion(grupoRequest.getCurso_d()
+                ).build());
+        }
 
 
         Chat chat = Chat.builder()

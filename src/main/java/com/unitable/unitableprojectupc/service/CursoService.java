@@ -37,6 +37,17 @@ public class CursoService {
         return curso;
     }
 
+    public Curso findCursoByNombre(String cursoNombre) {
+        Curso curso = cursoRepository.findByNombre(cursoNombre);
+        return curso;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Curso> findCursoByNombrePart(String cursoNombrePart) {
+        List<Curso> cursos = cursoRepository.findByNombreLike(cursoNombrePart.toLowerCase());
+        return cursos;
+    }
+
     private Curso initCurso(CursoRequest cursoRequest) {
         Curso curso = new Curso();
         curso.setNombre(cursoRequest.getNombre());

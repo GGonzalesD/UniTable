@@ -13,8 +13,6 @@ public class GrupoRequest {
     private String nombre;
     private String tema;
     private String descripcion;
-    @NotNull
-    private Long usuario_id;
-    @NotNull
-    private Long curso_id;
+    private String curso_n;
+    private String curso_d;
 }

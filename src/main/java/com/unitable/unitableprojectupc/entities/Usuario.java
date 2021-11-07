@@ -49,8 +49,12 @@ public class Usuario {
     @Enumerated(value = EnumType.STRING)
     private UserType tipo_usuario;
 
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(
+        mappedBy = "usuario",
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        orphanRemoval = false
+    )
     private List<Recompensa> recompensas;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
@@ -63,14 +67,14 @@ public class Usuario {
     )
     private List<Mensaje> mensajes;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_grupo",
         joinColumns = @JoinColumn(name = "user_id", nullable = false),
         inverseJoinColumns = @JoinColumn(name = "grupo_id", nullable = false)
     )
     private List<Grupo> grupos;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_contactos",
         joinColumns = @JoinColumn(name = "user_id", nullable = false),
         inverseJoinColumns = @JoinColumn(name = "contacto_id", nullable = false)

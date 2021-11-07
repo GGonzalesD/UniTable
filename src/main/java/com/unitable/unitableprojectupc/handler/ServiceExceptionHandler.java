@@ -38,7 +38,7 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<WrapperResponse<?>> all(Exception e, WebRequest request){
-        WrapperResponse<?> response = new WrapperResponse<>(false, "Internal Server Error", null);
+        WrapperResponse<?> response = new WrapperResponse<>(false, "Internal Server Error: " + e.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -56,7 +56,7 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GeneralServiceException.class)
     public ResponseEntity<WrapperResponse<?> > generalServiceException(GeneralServiceException e, WebRequest request){
-        WrapperResponse<?> response = new WrapperResponse<>(false, "Internal Server Error", null);
+        WrapperResponse<?> response = new WrapperResponse<>(false, "Internal Server Error: " + e.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

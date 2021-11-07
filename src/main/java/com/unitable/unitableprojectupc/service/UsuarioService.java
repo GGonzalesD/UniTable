@@ -13,6 +13,8 @@ import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+import com.unitable.unitableprojectupc.security.UserPrincipal;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -117,6 +118,11 @@ public class UsuarioService {
     public Usuario finUsuarioByCorreoAndPassword(String correo, String password) {
         Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioByCorreoAndPassword(correo, password));
         return usuario.orElseThrow(() -> new ResourceNotFoundException("El correro la contraseña estan mal"));
+    }
+    @Transactional(readOnly = true)
+    public Usuario findUsuario() {
+        Usuario usuario = UserPrincipal.getCurrentUser();
+        return usuario;
     }
 
     @Transactional(readOnly = true)

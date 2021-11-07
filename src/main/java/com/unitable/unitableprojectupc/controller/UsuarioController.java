@@ -1,6 +1,7 @@
 package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+import com.unitable.unitableprojectupc.converters.UsuarioConverter;
 import com.unitable.unitableprojectupc.dto.ActividadResponse;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
@@ -28,19 +29,22 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @Autowired
+    private UsuarioConverter usuarConverter;
+
+    @Autowired
     private EntityDtoConverter entityDtoConverter;
 
 
     @PostMapping
     public ResponseEntity<UsuarioResponse> createUser(@RequestBody UsuarioRequest usuarioRequest) throws Exception{
         Usuario usuario = usuarioService.createUser(usuarioRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario), HttpStatus.CREATED);
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuario), HttpStatus.CREATED);
     }
 
     @GetMapping("/follows/{id}")
     public ResponseEntity<List<UsuarioResponse>> getContactos(@PathVariable Long id) throws Exception{
         List<Usuario> usuarios = usuarioService.getContactos(id);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuarios),
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuarios),
                 HttpStatus.OK);
     }
 
@@ -63,35 +67,42 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioResponse>> findAll() throws Exception{
         List<Usuario> usuarios = usuarioService.findAllUsers();
         return new ResponseEntity<List<UsuarioResponse>>(
-                entityDtoConverter.convertEntityToDtoUser(usuarios),
+            usuarConverter.fromEntity(usuarios),
                 HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponse> findUsuarioById(@PathVariable Long id) throws Exception{
         Usuario usuario = usuarioService.findUsuarioById(id);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuario),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<UsuarioResponse> findInfoUser() throws Exception{
+        Usuario usuario = usuarioService.findUsuario();
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuario),
                 HttpStatus.OK);
     }
 
     @GetMapping("/userinfo")
     public ResponseEntity<List<UsuarioResponse>> findUsuarioByNombresAndApellidos(@RequestParam String nombres, @RequestParam String apellidos) throws Exception{
         List<Usuario> usuarios = usuarioService.finUsuarioByNombresAndApellidos(nombres, apellidos);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuarios),
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuarios),
                 HttpStatus.OK);
     }
 
     @GetMapping("/userlogin")
     public ResponseEntity<UsuarioResponse> findUsuarioByCorreoAndPassword(@RequestParam String correo, @RequestParam String password) throws Exception{
         Usuario usuario = usuarioService.finUsuarioByCorreoAndPassword(correo, password);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuario),
                 HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponse> updateUsuariobyId(@PathVariable Long id, @RequestBody UsuarioRequest usuarioRequest) throws Exception{
         Usuario usuario = usuarioService.updateUsuarioById(id, usuarioRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoUser(usuario),
+        return new ResponseEntity<>(usuarConverter.fromEntity(usuario),
                 HttpStatus.OK);
     }
 

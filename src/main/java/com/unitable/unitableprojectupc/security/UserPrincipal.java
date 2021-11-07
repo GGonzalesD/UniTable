@@ -42,6 +42,10 @@ public class UserPrincipal  implements UserDetails {
         return user.getCorreo();
     }
 
+    public Usuario getUsuario(){
+        return user;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -64,6 +68,6 @@ public class UserPrincipal  implements UserDetails {
 
     public static Usuario getCurrentUser() {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return principal.getUser();
+        return principal.getUsuario();
     }
 }
