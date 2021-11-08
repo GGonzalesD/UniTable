@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="unitableprojectupc" />
+        <module name="UniTable - copia" />
         <module name="UniTable" />
         <module name="streams" />
-        <module name="UniTable - copia" />
       </profile>
     </annotationProcessing>
   </component>
@@ -18,6 +19,7 @@
       <module name="UniTable" options="-parameters" />
       <module name="UniTable - copia" options="-parameters" />
       <module name="streams" options="-parameters" />
+      <module name="unitableprojectupc" options="-parameters" />
     </option>
   </component>
 </project>

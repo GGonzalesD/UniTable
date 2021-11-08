@@ -25,9 +25,9 @@ public class ActividadController {
     @Autowired
     private EntityDtoConverter entityDtoConverter;
 
-    @PostMapping("/{id}")
-    public ResponseEntity<ActividadResponse> createActividad(@PathVariable Long id, @RequestBody ActividadRequest actividadRequest) throws Exception{
-        Actividad actividad = actividadService.createActividad(id, actividadRequest);
+    @PostMapping("/agregar")
+    public ResponseEntity<ActividadResponse> createActividad(@RequestBody ActividadRequest actividadRequest) throws Exception{
+        Actividad actividad = actividadService.createActividad(actividadRequest);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.OK);
     }
 
@@ -55,5 +55,13 @@ public class ActividadController {
     public ResponseEntity<ActividadResponse> finishActividad(@PathVariable Long id) throws Exception{
         Actividad actividad = actividadService.finishActividad(id);
         return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoActividad(actividad), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/listar")
+    public ResponseEntity<List<ActividadResponse>> findActividadesByUserId() throws Exception{
+        List<Actividad> actividades = actividadService.findActividadesByUserId();
+        return new ResponseEntity<List<ActividadResponse>>(
+                entityDtoConverter.convertEntityToDtoActividad(actividades),
+                HttpStatus.OK);
     }
 }

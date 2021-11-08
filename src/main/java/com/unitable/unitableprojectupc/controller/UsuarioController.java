@@ -119,12 +119,4 @@ public class UsuarioController {
                 entityDtoConverter.convertEntityToDtoRecompensa(recompensas),
                 HttpStatus.OK);
     }
-
-    @GetMapping("/{id}/actividades")
-    public ResponseEntity<List<ActividadResponse>> findActividadesByUserId(@PathVariable Long id) throws Exception{
-        List<Actividad> actividades = usuarioService.findActividadesByUserId(id);
-        return new ResponseEntity<List<ActividadResponse>>(
-                entityDtoConverter.convertEntityToDtoActividad(actividades),
-                HttpStatus.OK);
-    }
 }

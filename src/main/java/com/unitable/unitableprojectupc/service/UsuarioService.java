@@ -184,12 +184,6 @@ public class UsuarioService {
         return recompensas.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
     }
 
-    @Transactional(readOnly = true)
-    public List<Actividad> findActividadesByUserId(Long userId) {
-        Optional<List<Actividad>> actividades = Optional.ofNullable(actividadRepository.findActividadesByUserId(userId));
-        return actividades.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
-    }
-
     public LoginResponse login(LoginRequest request){
         try {
             Usuario user=usuarioRepository.findByCorreo(request.getCorreo())

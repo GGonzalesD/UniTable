@@ -57,12 +57,18 @@ public class Usuario {
     )
     private List<Recompensa> recompensas;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+    //@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(
+            mappedBy = "usuario",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = false
+    )
     private List<Actividad> actividades;
     
     @OneToMany(
         mappedBy = "usuario",
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         cascade = CascadeType.ALL
     )
     private List<Mensaje> mensajes;

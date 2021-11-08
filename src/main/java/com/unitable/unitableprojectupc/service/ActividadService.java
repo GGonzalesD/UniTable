@@ -9,6 +9,7 @@ import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+import com.unitable.unitableprojectupc.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -31,8 +32,8 @@ public class ActividadService {
     private RecompensaRepository recompensaRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public Actividad createActividad(Long id, ActividadRequest actividadRequest) {
-        Actividad newActividad = initActividad(id, actividadRequest);
+    public Actividad createActividad(ActividadRequest actividadRequest) {
+        Actividad newActividad = initActividad(actividadRequest);
         return actividadRepository.save(newActividad);
     }
 
@@ -42,17 +43,20 @@ public class ActividadService {
         return actividades;
     }
 
-    private Actividad initActividad(Long actividadId, ActividadRequest actividadRequest) {
-        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findUsuarioById(actividadId));
+    private Actividad initActividad(ActividadRequest actividadRequest) {
         ActividadValidator.validateActividad(actividadRequest);
+
+        Usuario usuario = UserPrincipal.getCurrentUser();
+
         Actividad actividad = new Actividad();
-        actividad.setUsuario(usuario.orElseThrow(()->ResourceNotFoundException.byIndex("Actividad", actividadId)));
         actividad.setNombre(actividadRequest.getNombre());
         actividad.setDetalles(actividadRequest.getDetalles());
         actividad.setFecha_ini(actividadRequest.getFecha_ini());
         actividad.setFecha_fin(actividadRequest.getFecha_fin());
         actividad.setDuracion_min(Integer.valueOf((int)(actividadRequest.getFecha_fin().getTime() - actividadRequest.getFecha_ini().getTime()))/60000);
         actividad.setActiva(Boolean.TRUE);
+        actividad.setUsuario(usuario);
+        usuario.getActividades().add(actividad);
         return actividad;
     }
 
@@ -101,5 +105,11 @@ public class ActividadService {
         }
 
         return actividadRepository.save(actividadFromDb);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Actividad> findActividadesByUserId() {
+       List<Actividad> actividades = UserPrincipal.getCurrentUser().getActividades();
+       return actividades;
     }
 }
