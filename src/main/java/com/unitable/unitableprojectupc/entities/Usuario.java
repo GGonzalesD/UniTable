@@ -68,19 +68,19 @@ public class Usuario {
     
     @OneToMany(
         mappedBy = "usuario",
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         cascade = CascadeType.ALL
     )
     private List<Mensaje> mensajes;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_grupo",
         joinColumns = @JoinColumn(name = "user_id", nullable = false),
         inverseJoinColumns = @JoinColumn(name = "grupo_id", nullable = false)
     )
     private List<Grupo> grupos;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_contactos",
         joinColumns = @JoinColumn(name = "user_id", nullable = false),
         inverseJoinColumns = @JoinColumn(name = "contacto_id", nullable = false)

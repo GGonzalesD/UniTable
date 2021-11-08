@@ -2,12 +2,10 @@ package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
 import com.unitable.unitableprojectupc.converters.UsuarioConverter;
-import com.unitable.unitableprojectupc.dto.ActividadResponse;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
-import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Grupo;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;

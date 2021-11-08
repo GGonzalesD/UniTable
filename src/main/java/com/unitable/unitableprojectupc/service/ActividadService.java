@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ActividadService {
@@ -107,7 +106,7 @@ public class ActividadService {
         return actividadRepository.save(actividadFromDb);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation=Propagation.REQUIRED)
     public List<Actividad> findActividadesByUserId() {
        List<Actividad> actividades = UserPrincipal.getCurrentUser().getActividades();
        return actividades;

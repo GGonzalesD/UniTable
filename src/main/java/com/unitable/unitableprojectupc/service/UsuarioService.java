@@ -9,7 +9,6 @@ import com.unitable.unitableprojectupc.entities.*;
 import com.unitable.unitableprojectupc.exception.BadResourceRequestException;
 import com.unitable.unitableprojectupc.exception.GeneralServiceException;
 import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
-import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.GrupoRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
 import com.unitable.unitableprojectupc.repository.UsuarioRepository;
@@ -42,9 +41,6 @@ public class UsuarioService {
 
     @Autowired
     private RecompensaRepository recompensaRepository;
-
-    @Autowired
-    private ActividadRepository actividadRepository;
 
     @Autowired
     private GrupoRepository grupoRepository;
