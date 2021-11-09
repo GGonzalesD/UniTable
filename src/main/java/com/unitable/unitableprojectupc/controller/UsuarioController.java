@@ -39,9 +39,9 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarConverter.fromEntity(usuario), HttpStatus.CREATED);
     }
 
-    @GetMapping("/follows/{id}")
-    public ResponseEntity<List<UsuarioResponse>> getContactos(@PathVariable Long id) throws Exception{
-        List<Usuario> usuarios = usuarioService.getContactos(id);
+    @GetMapping("/follows")
+    public ResponseEntity<List<UsuarioResponse>> getContactos() throws Exception{
+        List<Usuario> usuarios = usuarioService.getContactos();
         return new ResponseEntity<>(usuarConverter.fromEntity(usuarios),
                 HttpStatus.OK);
     }

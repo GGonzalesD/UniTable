@@ -5,6 +5,7 @@ import com.unitable.unitableprojectupc.dto.ActividadRequest;
 import com.unitable.unitableprojectupc.entities.Actividad;
 import com.unitable.unitableprojectupc.entities.Recompensa;
 import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.exception.BadResourceRequestException;
 import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ActividadRepository;
 import com.unitable.unitableprojectupc.repository.RecompensaRepository;
@@ -86,11 +87,16 @@ public class ActividadService {
         Actividad actividadFromDb = actividadRepository.findById(actividadId)
                 .orElseThrow(()-> ResourceNotFoundException.byIndex("Actividad", actividadId));
 
-        actividadFromDb.setActiva(Boolean.FALSE);
-
         Usuario usuario = usuarioRepository.findUsuarioById(actividadFromDb.getUsuario().getId());
-        usuario.setNum_act_completas(usuario.getNum_act_completas() + 1);
-        usuarioRepository.save(usuario);
+
+        if(actividadFromDb.getActiva()) {
+            actividadFromDb.setActiva(Boolean.FALSE);
+            usuario.setNum_act_completas(usuario.getNum_act_completas() + 1);
+            usuarioRepository.save(usuario);
+        }
+        else {
+            throw new BadResourceRequestException("Ya finalizó esta actividad");
+        }
 
         if(usuario.getNum_act_completas() % 5 == 0)
         {

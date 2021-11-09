@@ -122,9 +122,9 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<Usuario> getContactos(Long userId){
-        Usuario usuario = usuarioRepository.findById(userId).
-            orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
+    public List<Usuario> getContactos(){
+
+        Usuario usuario = UserPrincipal.getCurrentUser();
         
         return usuario.getContactos();
     }
