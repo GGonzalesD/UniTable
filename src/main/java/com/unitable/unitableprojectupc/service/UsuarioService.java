@@ -138,14 +138,15 @@ public class UsuarioService {
         Usuario followed = usuarioRepository.findById(followedId).
             orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", followedId) );
 
-        if(usuario.getContactos().contains(followed))
-            usuario.getContactos().remove(followed);
+        Usuario followedf = usuario.getContactos().stream().filter( u -> u.getCorreo().compareTo(followed.getCorreo()) == 0 ).findFirst().orElse(null);
+
+        if(followedf != null)
+            usuario.getContactos().remove(followedf);
         else
             usuario.getContactos().add(followed);
-        
+    
         usuarioRepository.save(usuario);
-        return usuario.getContactos().contains(followed);
-
+        return followedf == null;
     }
 
     @Transactional
