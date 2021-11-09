@@ -175,9 +175,11 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<Recompensa> findRecompensasByUserId(Long userId) {
-        Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(userId));
-        return recompensas.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
+    public List<Recompensa> findRecompensasByUserId() {
+        Usuario usuario = UserPrincipal.getCurrentUser();
+
+        Optional<List<Recompensa>> recompensas = Optional.ofNullable(recompensaRepository.findRecompensasByUserId(usuario.getId()));
+        return recompensas.orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", usuario.getId()) );
     }
 
     public LoginResponse login(LoginRequest request){

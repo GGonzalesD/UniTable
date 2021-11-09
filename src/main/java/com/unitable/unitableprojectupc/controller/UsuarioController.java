@@ -110,9 +110,9 @@ public class UsuarioController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/recompensas")
-    public ResponseEntity<List<RecompensaResponse>> findRecompensasByUserId(@PathVariable Long id) throws Exception{
-        List<Recompensa> recompensas = usuarioService.findRecompensasByUserId(id);
+    @GetMapping("/recompensas")
+    public ResponseEntity<List<RecompensaResponse>> findRecompensasByUserId() throws Exception{
+        List<Recompensa> recompensas = usuarioService.findRecompensasByUserId();
         return new ResponseEntity<List<RecompensaResponse>>(
                 entityDtoConverter.convertEntityToDtoRecompensa(recompensas),
                 HttpStatus.OK);
