@@ -97,9 +97,9 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> updateUsuariobyId(@PathVariable Long id, @RequestBody UsuarioRequest usuarioRequest) throws Exception{
-        Usuario usuario = usuarioService.updateUsuarioById(id, usuarioRequest);
+    @PutMapping("/update")
+    public ResponseEntity<UsuarioResponse> updateUsuariobyId(@RequestBody UsuarioRequest usuarioRequest) throws Exception{
+        Usuario usuario = usuarioService.updateUsuarioById(usuarioRequest);
         return new ResponseEntity<>(usuarConverter.fromEntity(usuario),
                 HttpStatus.OK);
     }

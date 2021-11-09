@@ -149,14 +149,18 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario updateUsuarioById(Long userId, UsuarioRequest usuarioRequest) {
+    public Usuario updateUsuarioById(UsuarioRequest usuarioRequest) {
         UsuarioValidator.validateUser(usuarioRequest);
-        Usuario usuario = usuarioRepository.findById(userId).
-                orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
+
+        Usuario usuario = UserPrincipal.getCurrentUser();
+
         usuario.setNombres(usuarioRequest.getNombres());
         usuario.setApellidos(usuarioRequest.getApellidos());
         usuario.setCorreo(usuarioRequest.getCorreo());
-        usuario.setPassword(usuarioRequest.getPassword());
+
+        String encoder = passwordEncoder.encode(usuarioRequest.getPassword());
+        usuario.setPassword(encoder);
+
         usuario.setTipo_usuario(usuarioRequest.getTipo_usuario());
         return usuarioRepository.save(usuario);
     }
