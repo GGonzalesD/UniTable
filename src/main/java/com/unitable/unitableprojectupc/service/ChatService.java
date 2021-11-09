@@ -3,8 +3,11 @@ package com.unitable.unitableprojectupc.service;
 import com.unitable.unitableprojectupc.dto.ChatRequest;
 import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Mensaje;
+import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.exception.BadResourceRequestException;
 import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ChatRepository;
+import com.unitable.unitableprojectupc.security.UserPrincipal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +41,14 @@ public class ChatService {
     public Chat findChatById(Long chatId) {
         Chat chat = chatRepository.findById(chatId)
 			.orElseThrow( () -> ResourceNotFoundException.byIndex("Chat", chatId));
-        return chat;
+        
+        Usuario usuario = UserPrincipal.getCurrentUser();
+
+        if(usuario.getGrupos().stream().filter(g -> g.getChat().getId() == chat.getId()).findFirst().isPresent()){
+            return chat;
+        }else{
+            throw new BadResourceRequestException("Usuario '" + usuario.getId() + "' No está en el grupo!");
+        }
     }
 
     @Transactional
