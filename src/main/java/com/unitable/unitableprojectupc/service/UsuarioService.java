@@ -130,10 +130,11 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Boolean followToUser(Long userId, Long followedId) {
-        UsuarioValidator.validateFollow(userId, followedId);
-        Usuario usuario = usuarioRepository.findById(userId).
-            orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", userId) );
+    public Boolean followToUser(Long followedId) {
+
+        Usuario usuario = UserPrincipal.getCurrentUser();
+
+        UsuarioValidator.validateFollow(usuario.getId(), followedId);
         Usuario followed = usuarioRepository.findById(followedId).
             orElseThrow(() -> ResourceNotFoundException.byIndex("Usuario", followedId) );
 
@@ -161,17 +162,19 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario deleteUsuarioById(Long userId){
-        Usuario usuario = usuarioRepository.findById(userId)
-                .orElseThrow(()-> ResourceNotFoundException.byIndex("Usuario", userId) );
+    public void deleteUsuarioById(){
+        Usuario usuario = UserPrincipal.getCurrentUser();
         
         usuario.getGrupos().forEach((Grupo grupo)->{
             grupo.getUsuarios().remove(usuario);
             usuario.getGrupos().remove(grupo);
         });
 
+        usuario.getContactos().forEach((Usuario userFollow) -> {
+            userFollow.getContactos().remove(usuario);
+        });
+
         usuarioRepository.delete(usuario);
-        return usuario;
     }
 
     @Transactional(readOnly = true)

@@ -46,9 +46,9 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
-    @PutMapping("/follow")
-    public ResponseEntity<Boolean> followToUsuario(@RequestParam Long usId, @RequestParam Long fwId) throws Exception{
-        Boolean following = usuarioService.followToUser(usId, fwId);
+    @PutMapping("/follow/{fwId}")
+    public ResponseEntity<Boolean> followToUsuario(@PathVariable Long fwId) throws Exception{
+        Boolean following = usuarioService.followToUser(fwId);
         return new ResponseEntity<>(following,
                 HttpStatus.OK);
     }
@@ -104,9 +104,9 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUsuarioById(@PathVariable Long id) throws Exception{
-        usuarioService.deleteUsuarioById(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteUsuarioById() throws Exception{
+        usuarioService.deleteUsuarioById();
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
