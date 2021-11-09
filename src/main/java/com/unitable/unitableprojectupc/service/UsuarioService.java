@@ -5,6 +5,7 @@ import com.unitable.unitableprojectupc.converters.UsuarioConverter;
 import com.unitable.unitableprojectupc.dto.LoginRequest;
 import com.unitable.unitableprojectupc.dto.LoginResponse;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
+import com.unitable.unitableprojectupc.dto.UsuarioToFollowResponse;
 import com.unitable.unitableprojectupc.entities.*;
 import com.unitable.unitableprojectupc.exception.BadResourceRequestException;
 import com.unitable.unitableprojectupc.exception.GeneralServiceException;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,6 +98,33 @@ public class UsuarioService {
     public List<Usuario> findAllUsers() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios;
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioToFollowResponse> findAllUsersToFollow() {
+        Usuario usuario = UserPrincipal.getCurrentUser();
+        
+        String correo = usuario.getCorreo();
+
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        usuarios = Arrays.asList(usuarios.stream().filter(
+            o -> {
+                System.out.println(o.getCorreo());
+                return o.getCorreo().compareTo(correo) != 0;
+            }
+        ).toArray(Usuario[]::new));
+
+        List<UsuarioToFollowResponse> usuariosToFollow = Arrays.asList(
+            usuarios.stream().map(
+                o -> usuarioConverter.fromContact(o, 
+                    usuario.getContactos().stream().filter( u -> 
+                        u.getCorreo().compareTo(o.getCorreo()) == 0
+                    ).findFirst().orElse(null) != null
+                )
+            ).toArray(UsuarioToFollowResponse[]::new)
+        );
+
+        return usuariosToFollow;
     }
 
     @Transactional(readOnly = true)

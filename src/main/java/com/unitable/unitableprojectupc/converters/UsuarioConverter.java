@@ -3,6 +3,7 @@ package com.unitable.unitableprojectupc.converters;
 import com.unitable.unitableprojectupc.dto.LoginRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioRequest;
 import com.unitable.unitableprojectupc.dto.UsuarioResponse;
+import com.unitable.unitableprojectupc.dto.UsuarioToFollowResponse;
 import com.unitable.unitableprojectupc.entities.Usuario;
 
 import org.springframework.stereotype.Component;
@@ -35,6 +36,20 @@ public class UsuarioConverter extends  AbstractConverter<Usuario, UsuarioRequest
 				.carrera(dto.getCarrera())
 				.tipo_usuario(dto.getTipo_usuario())
 				.build();
+    }
+
+    public UsuarioToFollowResponse fromContact(Usuario usuario, Boolean following) {
+        if(usuario == null) return null;
+        return UsuarioToFollowResponse.builder()
+                .id(usuario.getId())
+				.correo(usuario.getCorreo())
+				.nombres(usuario.getNombres())
+				.apellidos(usuario.getApellidos())
+				.carrera(usuario.getCarrera())
+				.num_monedas(usuario.getNum_monedas())
+				.tipo_usuario(usuario.getTipo_usuario())
+                .following(following)
+                .build();
     }
 
     public Usuario login(LoginRequest dto){
