@@ -76,11 +76,9 @@ public class UsuarioService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public List<Grupo> joinToAGroup(Long userId, Long groupId) {
+    public List<Grupo> joinToAGroup(Long groupId) {
         
-        
-        Usuario usuario = usuarioRepository.findById(userId)
-			.orElseThrow( () -> ResourceNotFoundException.byIndex("Usuario", userId));
+        Usuario usuario = UserPrincipal.getCurrentUser();
 
         Grupo grupo = grupoRepository.findById(groupId)
             .orElseThrow( () -> ResourceNotFoundException.byIndex("Grupo", groupId));

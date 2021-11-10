@@ -1,6 +1,7 @@
 package com.unitable.unitableprojectupc.controller;
 
 import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+import com.unitable.unitableprojectupc.converters.GrupoConverter;
 import com.unitable.unitableprojectupc.converters.UsuarioConverter;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.dto.RecompensaResponse;
@@ -33,6 +34,8 @@ public class UsuarioController {
     @Autowired
     private EntityDtoConverter entityDtoConverter;
 
+    @Autowired
+    private GrupoConverter grupoConverter;
 
     @PostMapping
     public ResponseEntity<UsuarioResponse> createUser(@RequestBody UsuarioRequest usuarioRequest) throws Exception{
@@ -54,11 +57,10 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
-    @PutMapping("/join")
-    public ResponseEntity<List<GrupoResponse>> joinToOneGroup(@RequestParam Long userId, @RequestParam Long groupId) throws Exception{
-        List<Grupo> grupos = usuarioService.joinToAGroup(userId, groupId);
-
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupos),
+    @PutMapping("/join/{groupId}")
+    public ResponseEntity<List<GrupoResponse>> joinToOneGroup(@PathVariable Long groupId) throws Exception{
+        List<Grupo> grupos = usuarioService.joinToAGroup(groupId);
+        return new ResponseEntity<>(grupoConverter.fromEntity(grupos),
                 HttpStatus.OK);
     }
 
