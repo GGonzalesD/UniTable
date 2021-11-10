@@ -1,6 +1,6 @@
 package com.unitable.unitableprojectupc.controller;
 
-import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+import com.unitable.unitableprojectupc.converters.GrupoConverter;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.entities.Grupo;
@@ -25,34 +25,33 @@ public class GrupoController {
     @Autowired
     private GrupoService grupoService;
 
-
     @Autowired
-    private EntityDtoConverter entityDtoConverter;
+    private GrupoConverter grupoConverter;
 
     @GetMapping("/{id}")
     public ResponseEntity<GrupoResponse> findGrupoById(@PathVariable Long id) throws Exception{
         Grupo grupo = grupoService.findGrupoById(id);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupo),
+        return new ResponseEntity<>(grupoConverter.fromEntity(grupo),
                 HttpStatus.OK);
     }
 
     @GetMapping("/filter_cursos")
     public ResponseEntity<List<GrupoResponse>> findGrupoByUsuarioAndCurso(@RequestParam Long userId, @RequestParam Long cursoId) throws Exception{
         List<Grupo> grupos = grupoService.findgrupoByUsuarioAndCurso(userId, cursoId);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupos),
+        return new ResponseEntity<>(grupoConverter.fromEntity(grupos),
                 HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<GrupoResponse> createGrupo(@RequestBody GrupoRequest grupoRequest) throws Exception{
         Grupo grupo = grupoService.createGrupo(grupoRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupo), HttpStatus.OK);
+        return new ResponseEntity<>(grupoConverter.fromEntity(grupo), HttpStatus.OK);
     }
     @GetMapping
     public ResponseEntity<List<GrupoResponse>> findAll() throws Exception{
         List<Grupo> grupos = grupoService.findAllGroups();
         return new ResponseEntity<List<GrupoResponse>>(
-                entityDtoConverter.convertEntityToDtoGrupo(grupos),
+                grupoConverter.fromEntity(grupos),
                 HttpStatus.OK);
     }
 
@@ -65,7 +64,7 @@ public class GrupoController {
     @PutMapping("/{id}")
     public ResponseEntity<GrupoResponse> updateUsuariobyId(@PathVariable Long id, @RequestBody GrupoRequest grupoRequest) throws Exception{
         Grupo grupo = grupoService.updateGrupoById(id, grupoRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoGrupo(grupo),
+        return new ResponseEntity<>(grupoConverter.fromEntity(grupo),
                 HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package com.unitable.unitableprojectupc.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import com.unitable.unitableprojectupc.entities.Curso;
 
 @Getter
 @Setter
-
+@Builder
 public class GrupoResponse {
 
     private Long id;

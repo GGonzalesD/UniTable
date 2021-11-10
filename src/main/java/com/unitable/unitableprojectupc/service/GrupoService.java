@@ -1,8 +1,8 @@
 package com.unitable.unitableprojectupc.service;
 
 
-import com.unitable.unitableprojectupc.common.EntityDtoConverter;
 import com.unitable.unitableprojectupc.common.GrupoValidator;
+import com.unitable.unitableprojectupc.converters.GrupoConverter;
 import com.unitable.unitableprojectupc.dto.CursoRequest;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
@@ -44,12 +44,12 @@ public class GrupoService {
     @Autowired
     private ChatService chatService;
     @Autowired
-    private EntityDtoConverter entityDtoConverter;
+    private GrupoConverter grupoConverter;
 
     @Transactional(readOnly = true)
     public Page<GrupoResponse> findAllGroupsPage(Pageable pageable) {
             Page<GrupoResponse> grupos = grupoRepository.findAll(pageable).map(
-                grupo->entityDtoConverter.convertEntityToDtoGrupo(grupo));
+                grupo->grupoConverter.fromEntity(grupo));
         return grupos;
     }
 
