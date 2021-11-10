@@ -1,11 +1,12 @@
 package com.unitable.unitableprojectupc.service;
 
-import com.unitable.unitableprojectupc.common.MessageValidator;
 import com.unitable.unitableprojectupc.dto.MensajeRequest;
 import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Mensaje;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.repository.MensajeRepository;
+import com.unitable.unitableprojectupc.security.UserPrincipal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -23,8 +24,6 @@ public class MensajeService {
     private MensajeRepository mensajeRepository;
     @Autowired
     private ChatService chatService;
-    @Autowired
-    private UsuarioService usuarioService;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Mensaje createMensaje(MensajeRequest mensajeRequest) {
@@ -47,9 +46,7 @@ public class MensajeService {
     private Mensaje initMensaje(MensajeRequest mensajeRequest) {
         Mensaje mensaje = new Mensaje();
 
-        MessageValidator.validateUser(mensajeRequest);
-
-        Usuario usuario = usuarioService.findUsuarioById(mensajeRequest.getUsuario_id());
+        Usuario usuario = UserPrincipal.getCurrentUser();
         Chat chat = chatService.findChatById(mensajeRequest.getChat_id());
 
         mensaje.setMensaje(mensajeRequest.getMensaje());

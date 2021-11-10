@@ -1,6 +1,7 @@
 package com.unitable.unitableprojectupc.controller;
 
-import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+
+import com.unitable.unitableprojectupc.converters.MessageConverter;
 import com.unitable.unitableprojectupc.dto.MensajeRequest;
 import com.unitable.unitableprojectupc.dto.MensajeResponse;
 import com.unitable.unitableprojectupc.entities.Mensaje;
@@ -22,19 +23,19 @@ public class MensajeController {
     private MensajeService mensajeService;
 
     @Autowired
-    private EntityDtoConverter entityDtoConverter;
+    private MessageConverter messageConverter;
 
     @PostMapping
     public ResponseEntity<MensajeResponse> createMensaje(@RequestBody MensajeRequest mensajeRequest) throws Exception{
         Mensaje mensaje = mensajeService.createMensaje(mensajeRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoMensaje(mensaje), HttpStatus.OK);
+        return new ResponseEntity<>(messageConverter.fromEntity(mensaje), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<MensajeResponse>> findAll() throws Exception{
         List<Mensaje> mensajes = mensajeService.findAllMensajes();
         return new ResponseEntity<List<MensajeResponse>>(
-                entityDtoConverter.convertEntityToDtoMensaje(mensajes),
+            messageConverter.fromEntity(mensajes),
                 HttpStatus.OK);
     }
 }

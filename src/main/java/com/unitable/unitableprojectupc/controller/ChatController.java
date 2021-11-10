@@ -1,6 +1,6 @@
 package com.unitable.unitableprojectupc.controller;
 
-import com.unitable.unitableprojectupc.common.EntityDtoConverter;
+import com.unitable.unitableprojectupc.converters.ChatConverter;
 import com.unitable.unitableprojectupc.dto.ChatRequest;
 import com.unitable.unitableprojectupc.dto.ChatResponse;
 import com.unitable.unitableprojectupc.entities.Chat;
@@ -27,18 +27,18 @@ public class ChatController {
     private ChatService chatService;
 
     @Autowired
-    private EntityDtoConverter entityDtoConverter;
+    private ChatConverter chatConverter;
 
 	@PostMapping
     public ResponseEntity<ChatResponse> createChat(@RequestBody ChatRequest chatRequest) throws Exception{
         Chat chat = chatService.createChat(chatRequest);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoChat(chat), HttpStatus.OK);
+        return new ResponseEntity<>(chatConverter.fromEntity(chat), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ChatResponse> findUsuarioById(@PathVariable Long id) throws Exception{
         Chat chat = chatService.findChatById(id);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDtoChat(chat),
+        return new ResponseEntity<>(chatConverter.fromEntity(chat),
                 HttpStatus.OK);
     }
 
@@ -46,7 +46,7 @@ public class ChatController {
     public ResponseEntity<List<ChatResponse>> findAll() throws Exception{
         List<Chat> chats = chatService.findAllChats();
         return new ResponseEntity<List<ChatResponse>>(
-                entityDtoConverter.convertEntityToDtoChat(chats),
+            chatConverter.fromEntity(chats),
                 HttpStatus.OK);
     }
 }

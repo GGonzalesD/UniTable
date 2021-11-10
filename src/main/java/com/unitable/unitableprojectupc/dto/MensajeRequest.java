@@ -10,7 +10,5 @@ public class MensajeRequest {
     @NotBlank
     private String mensaje;
     @NotNull
-    private Long usuario_id;
-    @NotNull
     private Long chat_id;
 }
