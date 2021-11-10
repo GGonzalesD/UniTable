@@ -16,13 +16,16 @@ public class ChatConverter extends  AbstractConverter<Chat, ChatRequest, ChatRes
 	@Override
     public ChatResponse fromEntity(Chat chat) {
         if(chat == null) return null;
-        return ChatResponse.builder()
-				.id(chat.getId())
-				.cant_mensajes( chat.getCant_mensajes() )
-				.detalles( chat.getDetalles() )
-				.grupo_id( chat.getGrupo().getId() )
-				.mensajes( messageConverter.fromEntity(chat.getMensajes()) )
-                .build();
+
+		ChatResponse chatResponse = ChatResponse.builder()
+		.id(chat.getId())
+		.cant_mensajes( chat.getCant_mensajes() )
+		.detalles( chat.getDetalles() )
+		.grupo_id( chat.getGrupo()!=null?chat.getGrupo().getId():null )
+		.mensajes( messageConverter.fromEntity(chat.getMensajes()) )
+		.build();
+		
+		return chatResponse;
     }
 
     @Override

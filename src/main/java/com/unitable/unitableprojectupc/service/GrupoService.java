@@ -9,6 +9,7 @@ import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Curso;
 import com.unitable.unitableprojectupc.entities.Grupo;
+import com.unitable.unitableprojectupc.entities.Mensaje;
 import com.unitable.unitableprojectupc.entities.Usuario;
 import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
 import com.unitable.unitableprojectupc.repository.ChatRepository;
@@ -78,9 +79,10 @@ public class GrupoService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation =Propagation.REQUIRED)
-    public Grupo createGrupo(GrupoRequest grupoRequest) {
+    public Grupo createGrupo(GrupoRequest grupoRequest){
         Grupo newGrupo = initGrupo(grupoRequest);
-        return grupoRepository.save(newGrupo);
+        newGrupo = grupoRepository.save(newGrupo);
+        return newGrupo;
     }
 
     @Transactional
@@ -132,10 +134,10 @@ public class GrupoService {
                 ).build());
         }
 
-
         Chat chat = Chat.builder()
             .cant_mensajes(0)
             .detalles("Chat del grupo '" + grupoRequest.getNombre() + "'")
+            .mensajes(new ArrayList<Mensaje>())
             .build();
         chat = chatRepository.save(chat);
 

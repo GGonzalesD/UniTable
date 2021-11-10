@@ -12,13 +12,15 @@ public class MessageConverter extends  AbstractConverter<Mensaje, MensajeRequest
     @Override
     public MensajeResponse fromEntity(Mensaje message) {
         if(message == null) return null;
-        return MensajeResponse.builder()
+
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
 				.id(message.getId())
 				.mensaje(message.getMensaje())
 				.hora_mensaje(message.getHora_mensaje())
-				.chat_id(message.getChat().getId())
 				.usuario_id( message.getUsuario().getId() )
                 .build();
+
+        return mensajeResponse;
     }
 
     @Override
