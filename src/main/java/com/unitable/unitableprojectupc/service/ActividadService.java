@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,8 +35,35 @@ public class ActividadService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Actividad createActividad(ActividadRequest actividadRequest) {
-        Actividad newActividad = initActividad(actividadRequest);
-        return actividadRepository.save(newActividad);
+
+        List<Actividad> actividades = findActividadesByUserId();
+
+        if(actividadRequest.getFecha_fin().before(actividadRequest.getFecha_ini())){
+            throw new BadResourceRequestException("La Fecha de Inicio esta despues de la Fecha de fin");
+        }
+        else if(actividades.size()==0){
+            Actividad newActividad = initActividad(actividadRequest);
+            return actividadRepository.save(newActividad);
+        }
+        else{
+            for(int i = 0; i < actividades.size(); i++){
+                Date FechaIni = actividades.get(i).getFecha_ini();
+                Date FechaFin = actividades.get(i).getFecha_fin();
+
+                if(actividadRequest.getFecha_ini().compareTo(FechaIni) == 0 || actividadRequest.getFecha_fin().compareTo(FechaFin) == 0){
+                    throw new BadResourceRequestException("La Fecha de Inicio o la Fecha de Fin son iguales a las fechas de otra actividad");
+                }
+                else if(actividadRequest.getFecha_ini().after(FechaIni) == true && actividadRequest.getFecha_fin().before(FechaFin) == true){
+                    throw new BadResourceRequestException("El rango de tiempo choca con otra actividad");
+                }else if (actividadRequest.getFecha_ini().before(FechaIni) == true && actividadRequest.getFecha_fin().after(FechaFin) == true){
+                    throw new BadResourceRequestException("El rango de tiempo choca con otra actividad");
+                }else if(actividadRequest.getFecha_ini().after(FechaIni) == true && actividadRequest.getFecha_ini().before(FechaFin) == true || actividadRequest.getFecha_fin().after(FechaIni) == true && actividadRequest.getFecha_fin().before(FechaFin) == true){
+                    throw new BadResourceRequestException("El rango de tiempo choca con otra actividad");
+                }
+            }
+            Actividad newActividad = initActividad(actividadRequest);
+            return actividadRepository.save(newActividad);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -106,6 +135,7 @@ public class ActividadService {
                     .usuario(usuario)
                     .build();
 
+            usuario.setNum_monedas(usuario.getNum_monedas() + 25);
             recompensaRepository.save(recompensa);
         }
 
