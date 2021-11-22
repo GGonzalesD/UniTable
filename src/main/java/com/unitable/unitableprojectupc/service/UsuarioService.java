@@ -177,6 +177,20 @@ public class UsuarioService {
     }
 
     @Transactional
+    public Boolean get_cancel_Premium() {
+        Usuario usuario = UserPrincipal.getCurrentUser();
+
+        if (usuario.getIsPremium() != Boolean.TRUE)
+            usuario.setIsPremium(Boolean.TRUE);
+        else
+            usuario.setIsPremium(Boolean.FALSE);
+
+        usuarioRepository.save(usuario);
+
+        return usuario.getIsPremium();
+    }
+
+    @Transactional
     public Usuario updateUsuarioById(UsuarioRequest usuarioRequest) {
         UsuarioValidator.validateUser(usuarioRequest);
 

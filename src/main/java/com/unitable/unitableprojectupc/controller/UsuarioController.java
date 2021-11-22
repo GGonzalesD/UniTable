@@ -64,6 +64,12 @@ public class UsuarioController {
                 HttpStatus.OK);
     }
 
+    @PutMapping("/premium")
+    public ResponseEntity<Boolean> get_cancel_Premium() throws Exception {
+        Boolean premium = usuarioService.get_cancel_Premium();
+        return new ResponseEntity<>(premium, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<UsuarioResponse>> findAll() throws Exception{
         List<Usuario> usuarios = usuarioService.findAllUsers();
