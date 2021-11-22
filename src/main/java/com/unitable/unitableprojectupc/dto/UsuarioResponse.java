@@ -18,4 +18,5 @@ public class UsuarioResponse {
     private Integer num_act_completas;
     private Integer num_monedas;
     private UserType tipo_usuario;
+    private Boolean isPremium;
 }

@@ -180,8 +180,10 @@ public class UsuarioService {
     public Boolean get_cancel_Premium() {
         Usuario usuario = UserPrincipal.getCurrentUser();
 
-        if (usuario.getIsPremium() != Boolean.TRUE)
+        if (usuario.getIsPremium() != Boolean.TRUE) {
             usuario.setIsPremium(Boolean.TRUE);
+            usuario.setNum_monedas(usuario.getNum_monedas() + 5);
+        }
         else
             usuario.setIsPremium(Boolean.FALSE);
 

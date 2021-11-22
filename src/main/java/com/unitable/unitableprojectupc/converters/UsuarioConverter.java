@@ -23,6 +23,7 @@ public class UsuarioConverter extends  AbstractConverter<Usuario, UsuarioRequest
 				.num_act_completas(usuario.getNum_act_completas())
 				.num_monedas(usuario.getNum_monedas())
 				.tipo_usuario(usuario.getTipo_usuario())
+				.isPremium(usuario.getIsPremium())
                 .build();
     }
 
