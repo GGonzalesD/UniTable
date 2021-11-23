@@ -41,6 +41,9 @@ public class ActividadService {
         if(actividadRequest.getFecha_fin().before(actividadRequest.getFecha_ini())){
             throw new BadResourceRequestException("La Fecha de Inicio esta despues de la Fecha de fin");
         }
+        else if(actividadRequest.getFecha_ini().compareTo(actividadRequest.getFecha_fin()) == 0){
+            throw new BadResourceRequestException("La Fecha de Inicio es igual a la Fecha de fin");
+        }
         else if(actividades.size()==0){
             Actividad newActividad = initActividad(actividadRequest);
             return actividadRepository.save(newActividad);
