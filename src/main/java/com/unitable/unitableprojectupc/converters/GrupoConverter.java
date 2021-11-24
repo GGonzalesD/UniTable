@@ -3,6 +3,8 @@ package com.unitable.unitableprojectupc.converters;
 import com.unitable.unitableprojectupc.dto.GrupoRequest;
 import com.unitable.unitableprojectupc.dto.GrupoResponse;
 import com.unitable.unitableprojectupc.entities.Grupo;
+import com.unitable.unitableprojectupc.entities.Usuario;
+import com.unitable.unitableprojectupc.security.UserPrincipal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ public class GrupoConverter extends  AbstractConverter<Grupo, GrupoRequest, Grup
 	@Override
     public GrupoResponse fromEntity(Grupo grupo) {
         if(grupo == null) return null;
+		Usuario usuario = UserPrincipal.getCurrentUser();
         return GrupoResponse.builder()
 				.id(grupo.getId())
 				.nombre(grupo.getNombre())
@@ -26,6 +29,7 @@ public class GrupoConverter extends  AbstractConverter<Grupo, GrupoRequest, Grup
 				.fecha_fin(grupo.getFecha_fin())
 				.chat(chatConverter.fromEntity(grupo.getChat()))
 				.curso(grupo.getCurso())
+				.usuario_grupo( grupo.getUsuarios().stream().filter( x -> x.getId() == usuario.getId() ).findFirst().orElse(null) != null )
                 .build();
     }
 

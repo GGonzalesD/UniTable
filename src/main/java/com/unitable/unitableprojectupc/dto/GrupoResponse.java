@@ -21,5 +21,6 @@ public class GrupoResponse {
     private Date fecha_fin;
     private ChatResponse chat;
     private Curso curso;
+    private Boolean usuario_grupo;
 
 }
