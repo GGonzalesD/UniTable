@@ -13,5 +13,6 @@ public class MensajeResponse {
     private String mensaje;
     private Time hora_mensaje;
     private Long usuario_id;
+    private String usuario_name;
     private Long chat_id;
 }

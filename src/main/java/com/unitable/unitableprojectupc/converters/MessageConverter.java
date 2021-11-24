@@ -18,6 +18,7 @@ public class MessageConverter extends  AbstractConverter<Mensaje, MensajeRequest
 				.mensaje(message.getMensaje())
 				.hora_mensaje(message.getHora_mensaje())
 				.usuario_id( message.getUsuario().getId() )
+        .usuario_name(message.getUsuario().getNombres())
                 .build();
 
         return mensajeResponse;

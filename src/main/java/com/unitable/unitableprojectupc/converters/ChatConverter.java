@@ -12,6 +12,8 @@ public class ChatConverter extends  AbstractConverter<Chat, ChatRequest, ChatRes
 
 	@Autowired
 	private MessageConverter messageConverter;
+	@Autowired
+	private UsuarioConverter usuarioConverter;
 
 	@Override
     public ChatResponse fromEntity(Chat chat) {
@@ -23,6 +25,7 @@ public class ChatConverter extends  AbstractConverter<Chat, ChatRequest, ChatRes
 		.detalles( chat.getDetalles() )
 		.grupo_id( chat.getGrupo()!=null?chat.getGrupo().getId():null )
 		.mensajes( messageConverter.fromEntity(chat.getMensajes()) )
+		.usuarios( chat.getGrupo()!=null?usuarioConverter.fromEntity(chat.getGrupo().getUsuarios()):null )
 		.build();
 		
 		return chatResponse;

@@ -16,4 +16,5 @@ public class ChatResponse {
     private String detalles;
     private Long grupo_id;
     private List<MensajeResponse> mensajes;
+    private List<UsuarioResponse> usuarios;
 }
