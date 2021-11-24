@@ -10,9 +10,7 @@ import com.unitable.unitableprojectupc.entities.*;
 import com.unitable.unitableprojectupc.exception.BadResourceRequestException;
 import com.unitable.unitableprojectupc.exception.GeneralServiceException;
 import com.unitable.unitableprojectupc.exception.ResourceNotFoundException;
-import com.unitable.unitableprojectupc.repository.GrupoRepository;
-import com.unitable.unitableprojectupc.repository.RecompensaRepository;
-import com.unitable.unitableprojectupc.repository.UsuarioRepository;
+import com.unitable.unitableprojectupc.repository.*;
 import com.unitable.unitableprojectupc.security.UserPrincipal;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +50,12 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioConverter usuarioConverter;
+
+    @Autowired
+    private MensajeRepository mensajeRepository;
+
+    @Autowired
+    private ActividadRepository actividadRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Usuario createUser(UsuarioRequest usuarioRequest) {
@@ -222,6 +226,20 @@ public class UsuarioService {
             userFollow.getContactos().remove(usuario);
         });
 
+        usuario.getActividades().forEach((Actividad actividad) -> {
+           actividadRepository.delete(actividad);
+        });
+
+        usuario.getMensajes().forEach((Mensaje mensaje) -> {
+           mensajeRepository.delete(mensaje);
+        });
+
+        usuario.getRecompensas().forEach((Recompensa recompensa) -> {
+            recompensaRepository.delete(recompensa);
+        });
+
+        usuarioRepository.deleteContactos(usuario.getId());
+        usuarioRepository.deleteGrupos(usuario.getId());
         usuarioRepository.delete(usuario);
     }
 

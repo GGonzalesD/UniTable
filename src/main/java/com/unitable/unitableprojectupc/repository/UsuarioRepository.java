@@ -26,4 +26,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query(value = "SELECT * FROM usuarios usuario WHERE usuario.correo=?1", nativeQuery = true)
     Optional<Usuario> findByCorreo(String correo);
+
+    @Query(value = "DELETE * FROM usuario_contactos usuario WHERE usuario.user_id=?1 OR usuario.contacto_id=?1", nativeQuery = true)
+    void deleteContactos(Long id);
+
+    @Query(value = "DELETE * FROM usuario_grupo usuario WHERE usuario.user_id=?1", nativeQuery = true)
+    void deleteGrupos(Long id);
 }
