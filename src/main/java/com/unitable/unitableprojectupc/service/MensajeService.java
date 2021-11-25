@@ -1,6 +1,7 @@
 package com.unitable.unitableprojectupc.service;
 
 import com.unitable.unitableprojectupc.dto.MensajeRequest;
+import com.unitable.unitableprojectupc.dto.ReportMessageDto;
 import com.unitable.unitableprojectupc.entities.Chat;
 import com.unitable.unitableprojectupc.entities.Mensaje;
 import com.unitable.unitableprojectupc.entities.Usuario;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,6 +43,19 @@ public class MensajeService {
     public void deleteMensage(Mensaje mensaje){
         mensaje.getUsuario().getMensajes().remove(mensaje);
         mensajeRepository.delete(mensaje);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReportMessageDto> reportMessageDtos(Long charId){
+        List<ReportMessageDto> reports = new ArrayList<>();
+
+        mensajeRepository.findMessagePerChat(charId).forEach( x -> {
+            ReportMessageDto report = new ReportMessageDto();
+            report.setQuatity(Integer.parseInt(String.valueOf(x[0])));
+            report.setDateCreate(String.valueOf(x[1]));
+            reports.add(report);
+        });
+        return reports;
     }
 
     private Mensaje initMensaje(MensajeRequest mensajeRequest) {
